@@ -1,0 +1,67 @@
+﻿@using BALibrary.Inventory;
+@model BALibrary.Inventory.ManualCount
+@inject SchoolERP.Data.ApplicationDbContext _context;
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Areas/Inventory/Views/Shared/_Layout.cshtml";
+
+    List<ProductBatch> productBatches = (List<ProductBatch>)ViewBag.ProductBatches;
+    int counter = 0;
+}
+
+<h1>Create</h1>
+
+<h4>Manual Count</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <table id="datatable" class="table table-bordered table-hover table-light">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Product</th>
+                        <th>Count Value</th>
+                        <th>Remark (Description)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in productBatches)
+                    {
+                        <tr>
+                            <td style="width:10%;">@Html.Raw(++counter)</td>
+                            <td style="width:20%;">
+                                <input type="hidden" name="@Html.Raw("productbatchid_"+item.Id)" id="@Html.Raw("productbatchid_"+item.Id)" value="@Html.Raw(item.Id)"/>
+                                <input type="text" readonly="readonly" value="@Html.Raw(item.Product.Name + "("+ item.BatchNo+")")" class="form-control" />
+                            </td>
+                            <td style="width:10%;">
+                                <input type="number" name="@Html.Raw("count_value_"+item.Id)" id="@Html.Raw("count_value_"+item.Id)" class="form-control" />
+                            </td>
+                            <td style="width:60%;">
+                                <input type="text" name="@Html.Raw("description_"+item.Id)" id="@Html.Raw("description_"+item.Id)" class="form-control" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>#</th>
+                        <th>Product</th>
+                        <th>Count Value</th>
+                        <th>Remark (Description)</th>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <input type="submit" value="Create" class="btn btn-sm btn-outline btn-dark" />
+                            <a asp-action="Index" class="btn btn-sm btn-outline-primary">Back to List</a>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+
+        </form>
+    </div>
+</div>
+

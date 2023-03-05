@@ -1,0 +1,70 @@
+﻿@model BALibrary.Admin.ModuleTable
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+    List<string> tableNames = (List<string>)ViewBag.TableNames;
+    int counter = 0;
+}
+
+<h1>Create</h1>
+
+<h4>Module Table</h4>
+<hr />
+<form asp-action="Create">
+    <div class="row">
+        <div class="col-md-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input type="hidden" id="tablesCount" name="tablesCount" value="@Html.Raw(tableNames.Count)" />
+                <label asp-for="ModuleId" class="control-label"></label>
+                <select asp-for="ModuleId" asp-items="@ViewBag.ModuleId" class="form-control"></select>
+                <span asp-validation-for="ModuleId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-lg btn-outline-danger" />
+                <a asp-action="Index" class="btn btn-lg btn-outline-primary">Back to List</a>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <table>
+                <tr>
+                    <th><input type="checkbox" id="chkAll" name="chkAll" onchange="checkUncheckAll()" /></th>
+                    <th>TABLE NAMES (@Html.Raw(tableNames.Count))</th>
+                </tr>
+                <tr>
+                    <th colspan="2">&nbsp;</th>
+                </tr>
+                @foreach (string name in tableNames)
+                {
+                    <tr>
+                        <td><input type="checkbox" name="@Html.Raw("chk_"+counter)" id="@Html.Raw("chk_"+counter)" /></td>
+                        <td><input type="hidden" value="@Html.Raw(name)" name="@Html.Raw("table_name_"+counter)" /> &nbsp; <span>@Html.Raw(name.ToUpper())</span> </td>
+                    </tr>
+
+                    counter++;
+                }
+            </table>
+        </div>
+    </div>
+</form>
+
+<script>
+
+    function checkUncheckAll(){
+        var chkAll = document.getElementById("chkAll").checked;
+        var tablesCount = document.getElementById("tablesCount").value;
+        
+        if(chkAll){
+            for (var i = 0; i < tablesCount; i++) {
+                $("#chk_"+i).prop("checked", true);
+            }
+        } else {
+            for (var i = 0; i < tablesCount; i++) {
+                $("#chk_" + i).prop("checked", false);
+            }
+        }
+    }
+
+</script>

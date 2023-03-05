@@ -1,0 +1,81 @@
+﻿@using BALibrary.HR;
+@using BALibrary.Inventory;
+@model IEnumerable<BALibrary.Inventory.ManualCount>
+@inject SchoolERP.Data.ApplicationDbContext _context;
+@{
+    ViewData["Title"] = "Manual Counts";
+    Layout = "~/Areas/Inventory/Views/Shared/_Layout.cshtml";
+    var counter = 0;
+
+}
+
+<h1>@ViewBag.Title</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-outline-dark">Create New</a>
+</p>
+<table id="datatable" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Product Batch</th>
+            <th>Counted Date</th>
+            <th>Counted By</th>
+            <th>Count Value</th>
+            <th>System Balance</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            List<Stock> stocks = _context.Stocks.Where(s => s.ProductBatchId == item.ProductBatchId).OrderByDescending(s=>s.Id).ToList();
+            Employee? employee = _context.Employees.Find(item.EmployeeId);
+            var status = "<label class='label label-success'>Balanced</label>";
+            if (stocks[0].CurrentQuantity > item.CountValue)
+            {
+                status = "<label class='label label-danger'>System Balance > Counted </label>";
+            }
+            else if (stocks[0].CurrentQuantity < item.CountValue)
+            {
+                status = "<label class='label label-warning'>System Balance < Counted </label>";
+            }
+
+            if (stocks.Count > 0)
+            {
+                <tr>
+                    <td>@Html.Raw(++counter)</td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProductBatch.BatchNo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CountedDate)
+                    </td>
+                    <td>
+                        @Html.Raw(employee.FirstName+" "+employee.MiddleName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CountValue)
+                    </td>
+                    <td>
+                        @Html.Raw(stocks[0].CurrentQuantity)
+                    </td>
+                    <td>
+                        @Html.Raw(status)
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>#</th>
+            <th>Product Batch</th>
+            <th>Counted Date</th>
+            <th>Counted By</th>
+            <th>Count Value</th>
+            <th>System Balance</th>
+            <th>Status</th>
+        </tr>
+    </tfoot>
+</table>

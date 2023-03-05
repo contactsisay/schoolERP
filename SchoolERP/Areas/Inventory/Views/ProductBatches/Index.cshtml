@@ -1,0 +1,80 @@
+﻿@model IEnumerable<BALibrary.Inventory.ProductBatch>
+
+@{
+    ViewData["Title"] = "Product Batches";
+    Layout = "~/Areas/Inventory/Views/Shared/_Layout.cshtml";
+    var counter = 0;
+}
+
+<h1>@ViewBag.Title</h1>
+@*
+<p>
+    <a asp-action="Create" class="btn btn-outline-dark">Create New</a>
+</p>*@
+<table id="datatable" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Product</th>
+            <th>Batch No</th>
+            <th>Best Before</th>
+            <th>Manu. Date</th>
+            <th>Exp. Date</th>
+            <th>Purchasing Price</th>
+            <th>Selling Price</th>
+            <th>Is Sellable?</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.Raw(++counter)</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.Code)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BatchNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BestBefore)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ManufacturedDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExpirationDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PurchasingPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SellingPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsSellable)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>#</th>
+            <th>Product</th>
+            <th>Batch No</th>
+            <th>Best Before</th>
+            <th>Manu. Date</th>
+            <th>Exp. Date</th>
+            <th>Purchasing Price</th>
+            <th>Selling Price</th>
+            <th>Is Sellable?</th>
+            <th>Actions</th>
+        </tr>
+    </tfoot>
+</table>

@@ -1,0 +1,57 @@
+﻿@model BALibrary.Academic.AcademicYear
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Academic/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>AcademicYear</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="SessionId" class="control-label"></label>
+                <select asp-for="SessionId" class="form-control" asp-items="ViewBag.SessionId"></select>
+                <span asp-validation-for="SessionId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ClassId" class="control-label"></label>
+                <select asp-for="ClassId" class="form-control" asp-items="ViewBag.ClassId"></select>
+                <span asp-validation-for="ClassId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SemesterId" class="control-label"></label>
+                <select asp-for="SemesterId" class="form-control" asp-items="ViewBag.SemesterId"></select>
+                <span asp-validation-for="SemesterId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SubjectGroupId" class="control-label"></label>
+                <select asp-for="SubjectGroupId" class="form-control" asp-items="ViewBag.SubjectGroupId"></select>
+                <span asp-validation-for="SubjectGroupId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ExamGroupId" class="control-label"></label>
+                <select asp-for="ExamGroupId" class="form-control" asp-items="ViewBag.ExamGroupId"></select>
+                <span asp-validation-for="ExamGroupId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StudentId" class="control-label"></label>
+                <input asp-for="StudentId" class="form-control" />
+                <span asp-validation-for="StudentId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

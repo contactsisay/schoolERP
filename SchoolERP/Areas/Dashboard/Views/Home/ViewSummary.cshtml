@@ -1,0 +1,408 @@
+﻿@using BALibrary.Admin;
+@using static SchoolERP.Models.Common;
+@inject SchoolERP.Data.ApplicationDbContext _context;
+@inject IHttpContextAccessor _httpContextAccessor;
+@{
+    var itemsToExpire = ViewBag.ItemsToExpire;
+    var itemsToOrder = ViewBag.ItemsToOrder;
+    var dailySales = ViewBag.DailySales;
+    var weeklySales = ViewBag.WeeklySales;
+    int salesCounter = 0;
+    int productsCounter = 0;
+    decimal dailySalesAmt = 0;
+    decimal totalStudents = 30;
+    decimal totalEmployees = 5;
+    decimal totalSubjects = 10;
+    decimal total = 90;
+    int counter = 0;
+}
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- SPACER -->
+        <div class="row">
+            <div class="col-lg-12">&nbsp;</div>
+        </div>
+
+        <!-- Info boxes -->
+        <div class="row">
+            <div class="col-3">
+                <div class="info-box">
+                    <span class="info-box-icon bg-gradient-info elevation-1"><i class="fas fa-shopping-cart"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">Under 50%</span>
+                        <span class="info-box-number">
+                            @Html.Raw(ViewBag.FailedStudents != null ? ViewBag.FailedStudents.Count : 0)
+                            <small>#</small>
+                        </span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <div class="col-3">
+                <div class="info-box">
+                    <span class="info-box-icon bg-gradient-success elevation-1"><i class="fas fa-shopping-cart"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">>=50%</span>
+                        <span class="info-box-number">
+                            @Html.Raw(ViewBag.PassedStudents != null ? ViewBag.PassedStudents.Count : 0)
+                            <small>#</small>
+                        </span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <div class="col-3">
+                <div class="info-box mb-3">
+                    <span class="info-box-icon bg-gradient-warning elevation-1"><i class="fas fa-thumbs-down"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">1st Rank From Section</span>
+                        <span class="info-box-number">@Html.Raw(ViewBag.FirstRankFromSection != null ? ViewBag.FirstRankFromSection.Count : 0)</span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <div class="col-3">
+                <div class="info-box mb-3">
+                    <span class="info-box-icon bg-gradient-warning elevation-1"><i class="fas fa-thumbs-down"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">1st Rank From Grade</span>
+                        <span class="info-box-number">@Html.Raw(ViewBag.FirstRankFromGrade != null ? ViewBag.FirstRankFromGrade.Count : 0)</span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+
+        <div class="row">
+            <div class="col-md-3 col-sm-6 col-12">
+                <div class="info-box bg-gradient-info">
+                    <span class="info-box-icon"><i class="fa fa-graduation-cap"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">STUDENTS</span>
+                        <span class="info-box-number">@Html.Raw(totalStudents)</span>
+
+                        <div class="progress">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                        <span class="progress-description">
+                            Test 1
+                        </span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <div class="col-md-3 col-sm-6 col-12">
+                <div class="info-box bg-gradient-success">
+                    <span class="info-box-icon"><i class="fa fa-user"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">STAFFS</span>
+                        <span class="info-box-number">@Html.Raw(totalEmployees)</span>
+
+                        <div class="progress">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                        <span class="progress-description">
+                            Test 2
+                        </span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <div class="col-md-3 col-sm-6 col-12">
+                <div class="info-box bg-gradient-warning">
+                    <span class="info-box-icon"><i class="fa fa-users"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">TEACHERS</span>
+                        <span class="info-box-number">40</span>
+
+                        <div class="progress">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                        <span class="progress-description">
+                            Test 3
+                        </span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <div class="col-md-3 col-sm-6 col-12">
+                <div class="info-box bg-gradient-danger">
+                    <span class="info-box-icon"><i class="fas fa-comments"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">Notifications</span>
+                        <span class="info-box-number">200</span>
+
+                        <div class="progress">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                        <span class="progress-description">
+                            Test 4
+                        </span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+        <!-- Main row -->
+        <div class="row">
+            <!-- Left col -->
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- BAR CHART -->
+                        <div class="card card-outline card-info">
+                            <div class="card-header">
+                                <h3 class="card-title">(PASSED/FAILED) vs SUBJECT</h3>
+
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    @* <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                    </button>*@
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart">
+                                    <canvas id="barChart2" style="min-height: 250px; height: 350px; max-height: 350px; max-width: 100%;"></canvas>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.col -->
+            <div class="col-md-4">
+                <!-- TABLE: PIE CHART FOR ALL -->
+                <div class="card card-outline card-success">
+                    <div class="card-header border-transparent">
+                        <h3 class="card-title">OVERALL PASSED/FAILED/OVER 75%</h3>
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            @*<button type="button" class="btn btn-tool" data-card-widget="remove">
+                            <i class="fas fa-times"></i>
+                            </button>*@
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body p-0">
+                        <canvas id="pieChart2" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer clearfix">&nbsp;</div>
+                    <!-- /.card-footer -->
+                </div>
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+
+        <div class="row">
+            <div class="col-lg-4">
+                <!-- TABLE: ABOVE 75% -->
+                <div class="card card-outline card-success">
+                    <div class="card-header border-transparent">
+                        <h3 class="card-title">ABOVE 75%</h3>
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            @*<button type="button" class="btn btn-tool" data-card-widget="remove">
+                            <i class="fas fa-times"></i>
+                            </button>*@
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table m-0">
+                                <thead>
+                                    <tr>
+                                        <th>Subject Name</th>
+                                        <th>Subject Total</th>
+                                        <th>Student Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        var i = 0;
+                                        foreach (var a in ViewBag.Over75Students)
+                                        {
+                                            if (i < 5)
+                                            {
+                                                <tr>
+                                                    <td>@Html.Raw(a.SubjectName.ToString())</td>
+                                                    <td><span class="badge badge-success">@Html.Raw(a.SubjectTotal.ToString())</span></td>
+                                                    <td>@Html.Raw(a.FullName.ToString())</td>
+                                                </tr>
+                                            }
+                                            i++;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer clearfix">
+                        <a asp-action="SummaryDetail" asp-route-id="75" class="btn btn-sm btn-success float-right">View All</a>
+                    </div>
+                    <!-- /.card-footer -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <div class="col-lg-4">
+                <!-- TABLE: ABOVE 50% -->
+                <div class="card card-outline card-info">
+                    <div class="card-header border-transparent">
+                        <h3 class="card-title">ABOVE 50%</h3>
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            @*<button type="button" class="btn btn-tool" data-card-widget="remove">
+                            <i class="fas fa-times"></i>
+                            </button>*@
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table m-0">
+                                <thead>
+                                    <tr>
+                                        <th>Subject Name</th>
+                                        <th>Subject Total</th>
+                                        <th>Student Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        var j = 0;
+                                        foreach (var a in ViewBag.PassedStudents)
+                                        {
+                                            if (j < 5)
+                                            {
+                                                <tr>
+                                                    <td>@Html.Raw(a.SubjectName.ToString())</td>
+                                                    <td><span class="badge badge-info">@Html.Raw(a.SubjectTotal.ToString())</span></td>
+                                                    <td>@Html.Raw(a.FullName.ToString())</td>
+                                                </tr>
+                                            }
+                                            j++;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer clearfix">
+                        <a asp-action="SummaryDetail" asp-route-id="50" class="btn btn-sm btn-info float-right">View All</a>
+                    </div>
+                    <!-- /.card-footer -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <div class="col-lg-4">
+                <!-- TABLE: BELOW 50% -->
+                <div class="card card-outline card-danger">
+                    <div class="card-header border-transparent">
+                        <h3 class="card-title">BELOW 50%</h3>
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            @*<button type="button" class="btn btn-tool" data-card-widget="remove">
+                            <i class="fas fa-times"></i>
+                            </button>*@
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table m-0">
+                                <thead>
+                                    <tr>
+                                        <th>Subject Name</th>
+                                        <th>Subject Total</th>
+                                        <th>Student Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        var k = 0;
+                                        foreach (var a in ViewBag.FailedStudents)
+                                        {
+                                            if (k < 5)
+                                            {
+                                                <tr>
+                                                    <td>@Html.Raw(a.SubjectName.ToString())</td>
+                                                    <td><span class="badge badge-danger">@Html.Raw(a.SubjectTotal.ToString())</span></td>
+                                                    <td>@Html.Raw(a.FullName.ToString())</td>
+                                                </tr>
+                                            }
+                                            k++;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer clearfix">
+                        <a asp-action="SummaryDetail" asp-route-id="49" class="btn btn-sm btn-danger float-right">View All</a>
+                    </div>
+                    <!-- /.card-footer -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+        <!-- /.row -->
+
+    </div>
+    <!--/. container-fluid -->
+</section>
+<!-- /.content -->

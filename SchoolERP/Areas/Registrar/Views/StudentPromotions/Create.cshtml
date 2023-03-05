@@ -1,0 +1,189 @@
+﻿@model BALibrary.Registrar.StudentPromotion
+
+@{
+    ViewData["Title"] = "Create Promotion";
+    Layout = "~/Areas/Registrar/Views/Shared/_Layout.cshtml";
+
+    int counter = 0;
+}
+
+<h1>@ViewBag.Title</h1>
+
+<h4>@ViewBag.Title</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <!-- SEARCH FORM -->
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-lg-2">
+                    <label class="control-label">YEAR</label>
+                    <select name="Year" id="Year" class="form-control" asp-items="ViewBag.yearList"><option value="-1">Select</option></select>
+                </div>
+                <div class="col-lg-2">
+                    <label class="control-label">FROM CLASS</label>
+                    <select name="ClassId" id="ClassId2" class="form-control"></select>
+                </div>
+                <div class="col-lg-2">
+                    <label class="control-label">FROM SECTION</label>
+                    <select name="SectionId" id="SectionId" class="form-control"></select>
+                </div>
+                <div class="col-lg-2">
+                    <label class="control-label">TO CLASS</label>
+                    <select name="ClassId3" id="ClassId3" class="form-control"></select>
+                </div>
+                <div class="col-lg-2">
+                    <label class="control-label">TO SECTION</label>
+                    <select name="SectionId3" id="SectionId3" class="form-control"></select>
+                </div>
+                <div class="col-lg-2">
+                    <label>&nbsp;</label><br />
+                    <input type="submit" value="Load Students" class="btn btn-lg btn-flat btn-outline-dark" />
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="col-lg-12">&nbsp;
+            </div>
+        </div>
+        <!-- SAVING FORM -->
+        <form asp-action="CreatePromotion">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <input type="hidden" name="Year" value="@ViewBag.year" />
+                    <input type="hidden" name="ClassId" value="@ViewBag.classId" />
+                    <input type="hidden" name="SectionId" value="@ViewBag.sectionId" />
+                    <input type="hidden" name="ClassId3" value="@ViewBag.classId3" />
+                    <input type="hidden" name="SectionId3" value="@ViewBag.sectionId3" />
+                    <br />
+                    <input type="hidden" id="studentPromotionsCount" value="@ViewBag.studentPromotionsCount" />
+                    <input type="submit" value="Save Promotions" class="btn btn-sm btn-flat btn-outline-danger" />
+                    <a asp-controller="StudentPromotions" asp-action="Index" class="btn btn-sm btn-flat btn-outline-dark">Back to List</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">&nbsp;PREVIOUS STUDENT PROMOTIONS</div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+
+                    @if (ViewBag.queryResult != null)
+                    {
+                        <div class="row">
+                            <div class="col-lg-12">
+
+                                <table id="datatable2" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <input type="checkbox" name="chkAll" id="chkAll" onchange="checkUncheckAll()" />
+                                            </th>
+                                            <th>
+                                                @Html.Raw("ID No")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Full Name")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Gender")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Class")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Section")
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in ViewBag.queryResult)
+                                        {
+                                            <tr>
+                                                <td><input type="checkbox" name="chk_@counter" id="chk_@counter" onchange="chkStudent(this.id)" /></td>
+                                                <td>
+                                                    @Html.Raw(item.IDNo)
+                                                    <input type="hidden" name="StudentPromotionId_@counter" value="@item.StudentPromotionId">
+                                                    <input type="hidden" name="StudentId_@counter" value="@item.StudentId" />
+                                                </td>
+                                                <td>
+                                                    @Html.Raw(item.FullName)
+                                                </td>
+                                                <td>
+                                                    @Html.Raw(item.Gender)
+                                                </td>
+                                                <td>
+                                                    @Html.Raw("Grade "+item.ClassName)
+                                                </td>
+                                                <td>
+                                                    @Html.Raw(item.ClassName + "("+item.SectionName+")")
+                                                </td>
+                                            </tr>
+
+                                            counter++;
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>
+                                                <input type="checkbox" name="chkAll" id="chkAll" onchange="checkUncheckAll()" />
+                                            </th>
+                                            <th>
+                                                @Html.Raw("ID No")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Full Name")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Gender")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Class")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Section")
+                                            </th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <p><span class="text-lg bg-gradient-danger text-white text-bold">SELECT CLASS & SECTION FIRST!</span> <br />To see Students' Previous Promotions!</p>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function chkStudent(id) {
+
+    }
+
+    function checkUncheckAll() {
+        var chkAll = document.getElementById("chkAll").checked;
+        var studentPromotionsCount = document.getElementById("studentPromotionsCount").value;
+
+        if (chkAll) {
+            for (var i = 0; i < studentPromotionsCount; i++) {
+                $("#chk_" + i).prop("checked", true);
+            }
+        } else {
+            for (var i = 0; i < studentPromotionsCount; i++) {
+                $("#chk_" + i).prop("checked", false);
+            }
+        }
+    }
+</script>

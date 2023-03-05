@@ -1,0 +1,70 @@
+﻿@model BALibrary.Registrar.SectionTeacherSubject
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Areas/Registrar/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Assign</h1>
+
+<h4>Section Teacher Subject</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <label class="control-label">ROSTER NAME</label>
+                    <select name="AcademicYearId" id="ClassId2" class="form-control" asp-items="ViewBag.AcademicYears"><option value="-1">Select</option></select>
+                </div>
+                <div class="col-lg-4">
+                    <label asp-for="AcademicYearSectionId" class="control-label"></label>
+                    <select asp-for="AcademicYearSectionId" id="SectionId" class="form-control"><option value="-1">Select</option></select>
+                    <span asp-validation-for="AcademicYearSectionId" class="text-danger"></span>
+                </div>                
+                <div class="col-lg-4">
+                    <label asp-for="SubjectGroupDetailId" class="control-label"></label>
+                    <select asp-for="SubjectGroupDetailId" id="SubjectId" class="form-control"><option value="-1">Select</option></select>
+                    <span asp-validation-for="SubjectGroupDetailId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- SPACER -->
+            <div class="row">
+                <div class="col-lg-12">&nbsp;</div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <label asp-for="TeacherId" class="control-label"></label>
+                    <select asp-for="TeacherId" class="form-control" asp-items="ViewBag.Employees"><option value="-1">Select</option></select>
+                    <span asp-validation-for="TeacherId" class="text-danger"></span>
+                </div>
+                <div class="col-lg-4">
+                    <label asp-for="TotalClassPerWeek" class="control-label"></label>
+                    <input asp-for="TotalClassPerWeek" class="form-control" value="1" />
+                    <span asp-validation-for="TotalClassPerWeek" class="text-danger"></span>
+                </div>
+                <div class="col-lg-4">
+                    <label asp-for="AssignedDate" class="control-label"></label>
+                    <input asp-for="AssignedDate" class="form-control" />
+                    <span asp-validation-for="AssignedDate" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- SPACER -->
+            <div class="row">
+                <div class="col-lg-12">&nbsp;</div>
+            </div>           
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <input type="submit" value="Create" class="btn btn-md btn-flat btn-outline-danger" />
+                    <a asp-action="Index" class="btn btn-md btn-flat btn-outline-dark">Back to List</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,167 @@
+﻿@inject SchoolERP.Data.ApplicationDbContext _context;
+@{
+    ViewData["Title"] = "Mark Sheet Summary";
+    Layout = "~/Areas/Registrar/Views/Shared/_Layout.cshtml";
+
+    int counter = 0;
+    var queryResult = ViewBag.queryResult;
+    var classId = ViewBag.cId;
+    var sectionId = ViewBag.sectionId;
+    var sessionId = ViewBag.sessionId;
+    var subjects = ViewBag.subjects;
+    var students = ViewBag.students;
+}
+
+<h1>@ViewBag.Title</h1>
+
+<h4>Filter @ViewBag.Title</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <!-- SEARCH FORM -->
+        <form asp-action="MarkSheetSummary">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-lg-2">
+                    <label class="control-label">SESSION</label>
+                    <select name="SessionId" id="SessionId" class="form-control" asp-items="ViewBag.SessionId"></select>
+                </div>
+                <div class="col-lg-2">
+                    <label class="control-label">CLASS</label>
+                    <select name="ClassId" id="ClassId2" class="form-control" asp-items="ViewBag.ClassId"><option value="-1">Select</option></select>
+                </div>
+                <div class="col-lg-2">
+                    <label class="control-label">SECTION</label>
+                    <select name="SectionId" id="SectionId" class="form-control"></select>
+                </div>
+                <div class="col-lg-2">
+                    <label>&nbsp;</label><br />
+                    <input type="submit" value="VIEW SUMMARY" class="btn btn-lg btn-flat btn-outline-danger" />
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="col-lg-12">&nbsp;</div>
+        </div>
+        <!-- SAVING FORM -->
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <input type="hidden" name="CId" value="@classId" />
+                    <input type="hidden" name="SessionId" value="@sessionId" />
+                    <input type="hidden" name="SectionId" value="@sectionId" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">&nbsp;</div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+
+                    @if (students != null)
+                    {
+                        <div class="row">
+                            <div class="col-lg-12">
+
+                                <table id="datatable2" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>
+                                                @Html.Raw("ID No")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Full Name")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Class (Section)")
+                                            </th>
+                                            <th>
+                                                <table style="width:100%">
+                                                    <tr>
+                                                        @foreach (var s in subjects)
+                                                        {
+                                                            <td>@Html.Raw(s.SubjectName)</td>
+                                                        }
+                                                    </tr>
+                                                </table>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in students)
+                                        {
+                                            counter++;
+
+                                            <tr>
+                                                <td>
+                                                    @Html.Raw(counter)
+                                                </td>
+                                                <td>
+                                                    @Html.Raw(item.IDNo)
+                                                    <input type="hidden" name="StudentPromotionId_@counter" value="@item.StudentPromotionId">
+                                                </td>
+                                                <td>
+                                                    @Html.Raw(item.FullName)
+                                                </td>
+                                                <td>
+                                                    @Html.Raw(item.SectionName)
+                                                </td>
+                                                <td>
+                                                    <table style="width:100%">
+                                                        <tr>
+                                                            @*@foreach (var s in subjects)
+                                                            {
+                                                                <td>@Html.Raw(item.StudentSubjectTotal)</td>
+                                                            }*@
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>
+                                                @Html.Raw("ID No")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Full Name")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Class (Section)")
+                                            </th>
+                                            <th>
+                                                <table style="width:100%">
+                                                    <tr>
+                                                        @foreach (var s in subjects)
+                                                        {
+                                                            <td>@Html.Raw(s.SubjectName)</td>
+                                                        }
+                                                    </tr>
+                                                </table>
+                                            </th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <p><span class="text-lg bg-gradient-danger text-white text-bold">SELECT CLASS & SECTION FIRST!</span> <br />To see Roster!</p>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>

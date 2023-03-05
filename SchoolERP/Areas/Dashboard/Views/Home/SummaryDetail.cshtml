@@ -1,0 +1,68 @@
+﻿@using BALibrary.Registrar
+@inject SchoolERP.Data.ApplicationDbContext _context;
+@{
+    ViewData["Title"] = "Mark Summary";
+    Layout = "~/Areas/Dashboard/Views/Shared/_Layout.cshtml";
+
+    int counter = 0;
+}
+
+<h1>@ViewBag.Title</h1>
+<h4>Filter @ViewBag.Title</h4>
+<hr />
+<div class="row">
+    <div class="col-lg-12">
+        <a asp-action="SummaryToPdf" target="_blank" class="btn btn-lg btn-flat btn-outline-danger" asp-route-id="@ViewBag.id">EXPORT TO PDF WITH HEADER</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">&nbsp;</div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <table id="datatable" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>@Html.Raw("ID NO")</th>
+                    <th>@Html.Raw("FULL NAME")</th>
+                    <th>@Html.Raw("GENDER")</th>
+                    <th>@Html.Raw("SECTION")</th>
+                    <th>@Html.Raw("SUBJECT NAME")</th>
+                    <th>@Html.Raw("SUBJECT TOTAL")</th>
+                    <th>@Html.Raw("RANK (FROM SECTION)")</th>
+                    <th>@Html.Raw("RANK (FROM GRADE)")</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var i in ViewBag.queryResult)
+                {
+                    <tr>
+                        <td>@Html.Raw(++counter)</td>
+                        <td>@Html.Raw(i.IDNo)</td>
+                        <td>@Html.Raw(i.FullName)</td>
+                        <td>@Html.Raw(i.Gender)</td>
+                        <td>@Html.Raw(i.SectionName)</td>
+                        <td>@Html.Raw(i.SubjectName)</td>
+                        <td>@Html.Raw(i.SubjectTotal)</td>                        
+                        <td>@Html.Raw("<span style='font-weight:bold;font-size:20px;'><i><u>"+i.RankFromSection+"</u></i></span>")</td>
+                        <td>@Html.Raw("<span style='font-weight:bold;font-size:20px;'><i><u>"+i.RankFromGrade+"</u></i></span>")</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>#</th>
+                    <th>@Html.Raw("ID NO")</th>
+                    <th>@Html.Raw("FULL NAME")</th>
+                    <th>@Html.Raw("GENDER")</th>
+                    <th>@Html.Raw("SECTION")</th>
+                    <th>@Html.Raw("SUBJECT NAME")</th>
+                    <th>@Html.Raw("SUBJECT TOTAL")</th>
+                    <th>@Html.Raw("RANK (FROM SECTION)")</th>
+                    <th>@Html.Raw("RANK (FROM GRADE)")</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

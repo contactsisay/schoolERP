@@ -1,0 +1,76 @@
+﻿@model IEnumerable<BALibrary.Purchase.PurchaseOrder>
+@using BALibrary.Inventory;
+@inject SchoolERP.Data.ApplicationDbContext _context;
+@{
+    ViewData["Title"] = "Purchase Orders";
+    Layout = "~/Areas/Purchase/Views/Shared/_Layout.cshtml";
+    var counter = 0;
+}
+
+<h1>@ViewBag.Title</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-outline-dark">Create New</a>
+    <a asp-action="ImportFromExcel" class="btn btn-outline-primary">Import From Excel</a>
+</p>
+<table id="datatable" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Product</th>
+            <th>Product Code</th>
+            <th>Approved Amount</th>
+            <th>Batch No</th>
+            <th>Purchasing Price</th>
+            <th>Selling Price</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            List<ProductBatch> productBatches = _context.ProductBatches.Where(pb => pb.PurchaseOrderId == item.Id).ToList();
+            if (productBatches.Count > 0)
+            {
+                <tr>
+                    <td>@Html.Raw(++counter)</td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Product.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Product.Code)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ApprovedAmount)
+                    </td>
+                    <td>
+                        @Html.Raw(productBatches[0].BatchNo)
+                    </td>
+                    <td>
+                        @Html.Raw(productBatches[0].PurchasingPrice)
+                    </td>
+                    <td>
+                        @Html.Raw(productBatches[0].SellingPrice)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>#</th>
+            <th>Product</th>
+            <th>Product Code</th>
+            <th>Approved Amount</th>
+            <th>Batch No</th>
+            <th>Purchasing Price</th>
+            <th>Selling Price</th>
+            <th>Actions</th>
+        </tr>
+    </tfoot>
+</table>

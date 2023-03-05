@@ -1,0 +1,82 @@
+﻿@model BALibrary.Examination.ExamGroup
+@using BALibrary.Examination
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Areas/Examination/Views/Shared/_Layout.cshtml";
+
+    int counter = 0;
+    List<Exam> exams = (List<Exam>)ViewBag.Exams;
+}
+
+<h1>Create</h1>
+
+<h4>Exam Group (Maximum One Class is Allowed, e.g. <i style="color:indigo;font-weight:bold;">Grade 1 Exams)</i></h4>
+<hr />
+
+<form asp-action="Create">
+    <input type="hidden" id="examsCount" name="subjectsCount" value="@Html.Raw(exams.Count)" />
+    <div class="row">
+        <div class="col-md-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MaximumMark" class="control-label"></label>
+                <input asp-for="MaximumMark" class="form-control" />
+                <span asp-validation-for="MaximumMark" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PassingMark" class="control-label"></label>
+                <input asp-for="PassingMark" class="form-control" />
+                <span asp-validation-for="PassingMark" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-lg btn-outline-danger" />
+                <a asp-action="Index" class="btn btn-lg btn-outline-primary">Back to List</a>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <table>
+                <tr>
+                    <th><input type="checkbox" id="chkAll" name="chkAll" onchange="checkUncheckAll()" /></th>
+                    <th>EXAMS (@Html.Raw(exams.Count))</th>
+                </tr>
+                <tr>
+                    <th colspan="2">&nbsp;</th>
+                </tr>
+                @foreach (Exam exam in exams)
+                {
+                    <tr>
+                        <td><input type="checkbox" name="@Html.Raw("chk_"+counter)" id="@Html.Raw("chk_"+counter)" /></td>
+                        <td><input type="hidden" value="@Html.Raw(exam.Id)" name="@Html.Raw("exam_id_"+counter)" /> &nbsp; <span>@Html.Raw(exam.Name.ToUpper())</span> </td>
+                    </tr>
+
+                    counter++;
+                }
+            </table>
+        </div>
+    </div>
+</form>
+
+
+<script>
+
+    function checkUncheckAll() {
+        var chkAll = document.getElementById("chkAll").checked;
+        var examsCount = document.getElementById("examsCount").value;
+
+        if (chkAll) {
+            for (var i = 0; i < examsCount; i++) {
+                $("#chk_" + i).prop("checked", true);
+            }
+        } else {
+            for (var i = 0; i < examsCount; i++) {
+                $("#chk_" + i).prop("checked", false);
+            }
+        }
+    }
+
+</script>

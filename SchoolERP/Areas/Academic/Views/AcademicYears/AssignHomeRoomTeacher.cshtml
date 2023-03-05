@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Assign Home Room Teacher";
+    Layout = "~/Areas/Registrar/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@ViewBag.Title</h1>
+
+<h4>Filter @ViewBag.Title</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- SAVING FORM -->
+        <form asp-action="AssignHomeRoomTeacher">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <label class="control-label">SESSION</label>
+                    <select name="AcademicYearId" class="form-control" asp-items="ViewBag.AcademicYears"></select>
+                </div>
+                <div class="col-lg-4">
+                    <label class="control-label">TEACHER</label>
+                    <select name="TeacherId" class="form-control" asp-items="ViewBag.Employees"><option value="-1">Select</option></select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">&nbsp;</div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <label>&nbsp;</label><br />
+                    <input type="submit" value="SAVE CHANGES" class="btn btn-lg btn-flat btn-outline-danger" />
+                </div>
+                <div class="col-lg-8">&nbsp;</div>
+            </div>
+        </form>
+
+    </div>
+</div>

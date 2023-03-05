@@ -1,0 +1,161 @@
+﻿@using BALibrary.Inventory;
+@using BALibrary.Sales;
+@using BALibrary.Purchase;
+@inject SchoolERP.Data.ApplicationDbContext _context;
+@{
+    ViewData["Title"] = "Profit Loss Report";
+    Layout = "~/Areas/Report/Views/Shared/_Layout.cshtml";
+
+    var queryResult = ViewBag.queryResult;
+    int counter = 0;
+    decimal grandIncomeTotal = 0;
+    decimal grandExpenseTotal = 0;
+    decimal grandProfitTotal = 0;
+    decimal grandLossTotal = 0;
+}
+
+<section class="content">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-lg-12">&nbsp;</div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="callout callout-info">
+                    <h5><i class="fas fa-info"></i> Note:</h5>
+                    Select sales person and other filters to get what you need to see
+                </div>
+
+                <!-- Main content -->
+                <div class="">
+                    <!-- title row -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h4>
+                                <i class="fas fa-globe"></i> SchoolERP
+                                <small class="float-right">Date: <b>@Html.Raw(DateTime.Now.ToShortTimeString())</b></small>
+                            </h4>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+
+                    <!-- Table row -->
+                    <div class="row">
+                        <div class="col-12 table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>PRODUCT #</th>
+                                        <th>PRODUCT NAME</th>
+                                        <th>PRODUCT BATCH NO</th>
+                                        <th>PRODUCT TYPE Type</th>
+                                        <th>PURCHASE QUANTITY</th>
+                                        <th>SOLD QUANTITY</th>
+
+                                        <th>PURCHASE PRICE (ETB)</th>
+                                        <th>TOTAL EXPENSE</th>
+
+                                        <th>SELLING PRICE (ETB)</th>
+                                        <th>TOTAL INCOME</th>
+                                        
+                                        <th>PROFIT OR LOSS?</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var idd in queryResult)
+                                    {
+                                        grandIncomeTotal += idd.TotalIncome;
+                                        grandExpenseTotal += idd.TotalExpense;
+                                        if (Convert.ToDecimal(idd.ProfitOrLoss) > 0) {
+                                            grandProfitTotal += idd.ProfitOrLoss;
+                                        } else {
+                                            grandLossTotal += idd.ProfitOrLoss;
+                                        }
+                                        <tr>
+                                            <td>@Html.Raw(++counter)</td>
+                                            <td>@Html.Raw(idd.ProductName)</td>
+                                            <td>@Html.Raw(idd.ProductBatchNo)</td>
+                                            <td>@Html.Raw(idd.ProductTypeName)</td>
+                                            <td>@Html.Raw(idd.InitialQuantity)</td>
+                                            <td>@Html.Raw(idd.ItemPurchasingPrice)</td>
+                                            <td>@Html.Raw(idd.TotalExpense)</td>
+                                            <td>@Html.Raw(idd.SoldQuantity)</td>
+                                            <td>@Html.Raw(idd.ItemSellingPrice)</td>
+                                            <td>@Html.Raw(idd.TotalIncome)</td>
+                                            <td>@Html.Raw(Convert.ToDecimal(idd.ProfitOrLoss) > 0 ? "<label class='badge badge-success'>PROFIT</label>" : "<label class='badge badge-danger'>LOSS</label>")</td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+
+                    <div class="row">
+                        <!-- accepted payments column -->
+                        <div class="col-6">
+                            <p class="lead">Payment Methods:</p>
+                            <label>CASH</label>
+                            @*<p class="text-muted well well-sm shadow-none" style="margin-top: 10px;">
+                            Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles, weebly ning heekya handango imeem
+                            plugg
+                            dopplr jibjab, movity jajah plickers sifteo edmodo ifttt zimbra.
+                            </p>*@
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-6">
+                            <p class="lead">Report Date @Html.Raw(DateTime.Now.ToShortTimeString())</p>
+
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tr>
+                                        <th style="width:50%;">GRAND INCOME:</th>
+                                        <td>@Html.Raw(Convert.ToDecimal(grandIncomeTotal) + " ETB")</td>
+                                    </tr>
+                                    <tr>
+                                        <th style="width:50%;">GRAND EXPENSE:</th>
+                                        <td>@Html.Raw(Convert.ToDecimal(grandExpenseTotal) + " ETB")</td>
+                                    </tr>
+                                    <tr>
+                                        <th style="width:50%;">GRAND PROFIT:</th>
+                                        <td>@Html.Raw(Convert.ToDecimal(grandProfitTotal) + " ETB")</td>
+                                    </tr>
+                                    <tr>
+                                        <th style="width:50%;">GRAND LOSS:</th>
+                                        <td>@Html.Raw(Convert.ToDecimal(grandLossTotal) + " ETB")</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                    <!-- this row will not appear when printing -->
+                    <div class="row no-print">
+                        <div class="col-12">
+                            <a href="#" onclick="onPrint()" class="btn btn-sm btn-outline-dark"><i class="fas fa-print"></i> Print Report</a>
+
+                            <a asp-action="Index" class="btn btn-sm btn-outline-dark float-right" style="margin-right: 5px;">
+                                <i class="fas fa-list"></i> Back to Filter
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.invoice -->
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+
+<script>
+
+    function onPrint() {
+        window.addEventListener("load", window.print());
+    }
+</script>

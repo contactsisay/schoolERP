@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="rptSemesterGradeReport" targetNamespace="http://tempuri.org/rptSemesterGradeReport.xsd" xmlns:mstns="http://tempuri.org/rptSemesterGradeReport.xsd" xmlns="http://tempuri.org/rptSemesterGradeReport.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+          <Connection AppSettingsObjectName="Settings" AppSettingsPropertyName="SchoolERP_DbConnectionString" ConnectionStringObject="" IsAppSettingsProperty="true" Modifier="Assembly" Name="SchoolERP_DbConnectionString (Settings)" ParameterPrefix="@" PropertyReference="ApplicationSettings.RDLCDesign.Properties.Settings.GlobalReference.Default.SchoolERP_DbConnectionString" Provider="System.Data.SqlClient" />
+        </Connections>
+        <Tables>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="DataTable1TableAdapter" GeneratorDataComponentClassName="DataTable1TableAdapter" Name="DataTable1" UserDataComponentName="DataTable1TableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="SchoolERP_DbConnectionString (Settings)" DbObjectName="" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="false" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>select ' ' as IDNo, ' ' as FullName,' ' as ClassName,' ' as SchoolName,' ' as ExamCenter,' ' as SubjectName, 0 as SubjectCount,0 as SubjectTotal,0 as OverallMark, 0 as Average,' ' as SessionName, ' ' as SectionName,' ' as OverallMessage,' ' as HomeRoomTeacherName,' ' as RankFromSection,' ' as RankFromGrade,' ' as RankFromSchool from MarksSheetDetails</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="IDNo" DataSetColumn="IDNo" />
+              <Mapping SourceColumn="FullName" DataSetColumn="FullName" />
+              <Mapping SourceColumn="ClassName" DataSetColumn="ClassName" />
+              <Mapping SourceColumn="SchoolName" DataSetColumn="SchoolName" />
+              <Mapping SourceColumn="ExamCenter" DataSetColumn="ExamCenter" />
+              <Mapping SourceColumn="SubjectName" DataSetColumn="SubjectName" />
+              <Mapping SourceColumn="SessionName" DataSetColumn="SessionName" />
+              <Mapping SourceColumn="OverallMessage" DataSetColumn="OverallMessage" />
+              <Mapping SourceColumn="HomeRoomTeacherName" DataSetColumn="HomeRoomTeacherName" />
+              <Mapping SourceColumn="RankFromSection" DataSetColumn="RankFromSection" />
+              <Mapping SourceColumn="RankFromGrade" DataSetColumn="RankFromGrade" />
+              <Mapping SourceColumn="RankFromSchool" DataSetColumn="RankFromSchool" />
+              <Mapping SourceColumn="SubjectCount" DataSetColumn="SubjectCount" />
+              <Mapping SourceColumn="SubjectTotal" DataSetColumn="SubjectTotal" />
+              <Mapping SourceColumn="OverallMark" DataSetColumn="OverallMark" />
+              <Mapping SourceColumn="Average" DataSetColumn="Average" />
+              <Mapping SourceColumn="SectionName" DataSetColumn="SectionName" />
+              <Mapping SourceColumn="SubjectRankFromSection" DataSetColumn="SubjectRankFromSection" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+        </Tables>
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="rptSemesterGradeReport" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_UserDSName="rptSemesterGradeReport" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="rptSemesterGradeReport">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="DataTable1" msprop:Generator_RowEvHandlerName="DataTable1RowChangeEventHandler" msprop:Generator_RowDeletedName="DataTable1RowDeleted" msprop:Generator_RowDeletingName="DataTable1RowDeleting" msprop:Generator_RowEvArgName="DataTable1RowChangeEvent" msprop:Generator_TablePropName="DataTable1" msprop:Generator_RowChangedName="DataTable1RowChanged" msprop:Generator_UserTableName="DataTable1" msprop:Generator_RowChangingName="DataTable1RowChanging" msprop:Generator_RowClassName="DataTable1Row" msprop:Generator_TableClassName="DataTable1DataTable" msprop:Generator_TableVarName="tableDataTable1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="IDNo" msdata:ReadOnly="true" msprop:Generator_ColumnPropNameInTable="IDNoColumn" msprop:Generator_ColumnPropNameInRow="IDNo" msprop:Generator_UserColumnName="IDNo" msprop:Generator_ColumnVarNameInTable="columnIDNo" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="FullName" msdata:ReadOnly="true" msprop:Generator_ColumnPropNameInTable="FullNameColumn" msprop:Generator_ColumnPropNameInRow="FullName" msprop:Generator_UserColumnName="FullName" msprop:Generator_ColumnVarNameInTable="columnFullName" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="ClassName" msdata:ReadOnly="true" msprop:Generator_ColumnPropNameInTable="ClassNameColumn" msprop:Generator_ColumnPropNameInRow="ClassName" msprop:Generator_UserColumnName="ClassName" msprop:Generator_ColumnVarNameInTable="columnClassName" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="SchoolName" msdata:ReadOnly="true" msprop:Generator_ColumnPropNameInTable="SchoolNameColumn" msprop:Generator_ColumnPropNameInRow="SchoolName" msprop:Generator_UserColumnName="SchoolName" msprop:Generator_ColumnVarNameInTable="columnSchoolName" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="ExamCenter" msdata:ReadOnly="true" msprop:Generator_ColumnPropNameInTable="ExamCenterColumn" msprop:Generator_ColumnPropNameInRow="ExamCenter" msprop:Generator_UserColumnName="ExamCenter" msprop:Generator_ColumnVarNameInTable="columnExamCenter" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="SubjectName" msdata:ReadOnly="true" msprop:Generator_ColumnPropNameInTable="SubjectNameColumn" msprop:Generator_ColumnPropNameInRow="SubjectName" msprop:Generator_UserColumnName="SubjectName" msprop:Generator_ColumnVarNameInTable="columnSubjectName" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="SessionName" msdata:ReadOnly="true" msprop:Generator_ColumnPropNameInTable="SessionNameColumn" msprop:Generator_ColumnPropNameInRow="SessionName" msprop:Generator_UserColumnName="SessionName" msprop:Generator_ColumnVarNameInTable="columnSessionName" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="OverallMessage" msdata:ReadOnly="true" msprop:Generator_ColumnPropNameInTable="OverallMessageColumn" msprop:Generator_ColumnPropNameInRow="OverallMessage" msprop:Generator_UserColumnName="OverallMessage" msprop:Generator_ColumnVarNameInTable="columnOverallMessage" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="HomeRoomTeacherName" msdata:ReadOnly="true" msprop:Generator_ColumnPropNameInTable="HomeRoomTeacherNameColumn" msprop:Generator_ColumnPropNameInRow="HomeRoomTeacherName" msprop:Generator_UserColumnName="HomeRoomTeacherName" msprop:Generator_ColumnVarNameInTable="columnHomeRoomTeacherName" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="RankFromSection" msdata:ReadOnly="true" msprop:Generator_ColumnPropNameInTable="RankFromSectionColumn" msprop:Generator_ColumnPropNameInRow="RankFromSection" msprop:Generator_UserColumnName="RankFromSection" msprop:Generator_ColumnVarNameInTable="columnRankFromSection" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="RankFromGrade" msdata:ReadOnly="true" msprop:Generator_ColumnPropNameInTable="RankFromGradeColumn" msprop:Generator_ColumnPropNameInRow="RankFromGrade" msprop:Generator_UserColumnName="RankFromGrade" msprop:Generator_ColumnVarNameInTable="columnRankFromGrade" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="RankFromSchool" msdata:ReadOnly="true" msprop:Generator_ColumnPropNameInTable="RankFromSchoolColumn" msprop:Generator_ColumnPropNameInRow="RankFromSchool" msprop:Generator_UserColumnName="RankFromSchool" msprop:Generator_ColumnVarNameInTable="columnRankFromSchool" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="SubjectCount" msdata:ReadOnly="true" msprop:Generator_ColumnPropNameInTable="SubjectCountColumn" msprop:Generator_ColumnPropNameInRow="SubjectCount" msprop:Generator_UserColumnName="SubjectCount" msprop:Generator_ColumnVarNameInTable="columnSubjectCount" type="xs:int" minOccurs="0" />
+              <xs:element name="SubjectTotal" msdata:ReadOnly="true" msprop:Generator_ColumnPropNameInTable="SubjectTotalColumn" msprop:Generator_ColumnPropNameInRow="SubjectTotal" msprop:Generator_UserColumnName="SubjectTotal" msprop:Generator_ColumnVarNameInTable="columnSubjectTotal" type="xs:int" minOccurs="0" />
+              <xs:element name="OverallMark" msdata:ReadOnly="true" msprop:Generator_ColumnPropNameInTable="OverallMarkColumn" msprop:Generator_ColumnPropNameInRow="OverallMark" msprop:Generator_UserColumnName="OverallMark" msprop:Generator_ColumnVarNameInTable="columnOverallMark" type="xs:int" minOccurs="0" />
+              <xs:element name="Average" msdata:ReadOnly="true" msprop:Generator_ColumnPropNameInTable="AverageColumn" msprop:Generator_ColumnPropNameInRow="Average" msprop:Generator_UserColumnName="Average" msprop:Generator_ColumnVarNameInTable="columnAverage" type="xs:int" minOccurs="0" />
+              <xs:element name="SectionName" msdata:ReadOnly="true" msprop:Generator_ColumnPropNameInTable="SectionNameColumn" msprop:Generator_ColumnPropNameInRow="SectionName" msprop:Generator_UserColumnName="SectionName" msprop:Generator_ColumnVarNameInTable="columnSectionName" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="SubjectRankFromSection" msdata:ReadOnly="true" msprop:Generator_ColumnPropNameInTable="SubjectRankFromSection" msprop:Generator_ColumnPropNameInRow="SubjectRankFromSection" msprop:Generator_UserColumnName="SubjectRankFromSection" msprop:Generator_ColumnVarNameInTable="columnSubjectRankFromSection" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

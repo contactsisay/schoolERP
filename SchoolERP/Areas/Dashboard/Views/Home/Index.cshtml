@@ -1,0 +1,67 @@
+﻿@using BALibrary.Admin;
+@using static SchoolERP.Models.Common;
+@inject SchoolERP.Data.ApplicationDbContext _context;
+@{
+    List<RoleModule> userRoleModules = (List<RoleModule>)ViewBag.UserRoleModules;
+    int counter = 0;
+    string[] classNames = Common.GetDashboardItemsClassNames();
+    string[] colorNames = Common.GetDashboardItemsColors();
+}
+
+<div class="text-center">
+    <h1 class="display-4">DASHBOARD</h1>
+</div>
+
+<div class="row">
+    <div class="col-lg-12 text-center">
+        <h4><a asp-action="ViewSummary" class="btn btn-lg btn-outline-info">VIEW SUMMARY DASHBAORD</a></h4>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        @if (userRoleModules != null && userRoleModules.Count > 0)
+        {
+            <div class="container-fluid">
+                <div class="row">
+                    @foreach (var userRoleModule in userRoleModules)
+                    {
+                        string moduleName = Common.GetModuleText((ModuleName)userRoleModule.ModuleId);
+                        if (!((ModuleName)userRoleModule.ModuleId == (ModuleName)Common.ModuleName.DASHBOARD))
+                        {
+                            if ((Common.isAuthorized(userRoleModules[0].RoleId, moduleName, "Home", "Index")))
+                            {
+                                <div class="col-md-3 col-3">
+
+                                    <div class="info-box shadow-none">
+                                        <span class="info-box-icon bg-@classNames[counter]"><i class="far fa-envelope"></i></span>
+
+                                        <div class="info-box-content" style="border:solid 2px @colorNames[counter];">
+                                            <span class="info-box-text">@moduleName</span><br />
+                                            <a asp-area="@moduleName" asp-controller="Home" asp-action="Index" class="small-box-footer btn btn-sm btn-danger" style="border:none;background-color:@colorNames[counter];color:white;">Load Module <i class="fas fa-arrow-circle-right"></i></a>
+                                        </div>
+                                        <!-- /.info-box-content -->
+                                    </div>
+                                    <!-- /.info-box -->
+                                </div>
+
+                                counter++;
+                            }
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="col-lg-12">
+                <p><span class="text-lg bg-gradient-red text-white text-bold">SORRY!</span> <br />You don't have access to any of the modules. Contact Your Administrator!</p>
+            </div>
+        }
+    </div>
+
+</div>

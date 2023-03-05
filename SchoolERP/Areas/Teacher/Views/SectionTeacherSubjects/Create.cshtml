@@ -1,0 +1,46 @@
+﻿@model BALibrary.Registrar.SectionTeacherSubject
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Areas/Teacher/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>SectionTeacherSubject</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="AcademicYearSectionId" class="control-label"></label>
+                <input asp-for="AcademicYearSectionId" class="form-control" />
+                <span asp-validation-for="AcademicYearSectionId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SubjectGroupDetailId" class="control-label"></label>
+                <input asp-for="SubjectGroupDetailId" class="form-control" />
+                <span asp-validation-for="SubjectGroupDetailId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TeacherId" class="control-label"></label>
+                <input asp-for="TeacherId" class="form-control" />
+                <span asp-validation-for="TeacherId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AssignedDate" class="control-label"></label>
+                <input asp-for="AssignedDate" class="form-control" />
+                <span asp-validation-for="AssignedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

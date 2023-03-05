@@ -1,0 +1,65 @@
+﻿@model IEnumerable<BALibrary.Inventory.Product>
+
+@{
+    ViewData["Title"] = "Products";
+    Layout = "~/Areas/Inventory/Views/Shared/_Layout.cshtml";
+    var counter = 0;
+}
+
+<h1>@ViewBag.Title</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-outline-dark">Create New</a>
+</p>
+<table id="datatable" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Code</th>
+            <th>Min. Order Level</th>
+            <th>Product Category</th>
+            <th>Unit of Measurement</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.Raw(++counter)</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Code)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MinimumOrderLevel)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductCategory.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Uom.Name)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Code</th>
+            <th>Min. Order Level</th>
+            <th>Product Category</th>
+            <th>Unit of Measurement</th>
+            <th>Actions</th>
+        </tr>
+    </tfoot>
+</table>

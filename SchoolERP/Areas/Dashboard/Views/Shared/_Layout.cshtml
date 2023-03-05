@@ -1,0 +1,401 @@
+﻿@inject IHttpContextAccessor _httpContextAccessor;
+@{
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+<!-- Main Sidebar Container -->
+<aside class="main-sidebar elevation-4 sidebar-light-danger">
+    <!-- Brand Logo -->
+    <a href="/" class="brand-link bg-danger">
+        <img src="~/dist/img/AdminLTELogo.png" alt="SchoolERP" class="brand-image img-circle elevation-3" style="opacity: .8">
+        <span class="brand-text font-weight-light">SchoolERP</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar os-host os-host-resize-disabled os-host-transition os-host-overflow os-host-overflow-y os-host-scrollbar-horizontal-hidden os-theme-dark">
+
+        @Html.Partial("_CurrentUserPanel")
+
+        <!-- SidebarSearch Form -->
+        <div class="form-inline">
+            <div class="input-group" data-widget="sidebar-search">
+                <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+                <div class="input-group-append">
+                    <button class="btn btn-sidebar">
+                        <i class="fas fa-search fa-fw"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.sidebar -->
+</aside>
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">&nbsp;</div><!-- /.col -->
+                <div class="col-sm-6">&nbsp;</div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- CONTAINER -->
+            <div class="card card-outline card-danger" style="padding-left:10px;padding-right:10px;">
+                <div class="card-header">
+                    <h3 class="card-title">Welcome: <span class="badge badge-info">@Html.Raw(_httpContextAccessor.HttpContext.Session.GetString(SessionVariable.SessionKeyUserEmail))</span></h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body p-0">
+                    @RenderBody()
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div><!--/. container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+<input type="hidden" id="messageType" value="@TempData["MessageType"]" />
+<input type="hidden" id="message" value="@TempData["Message"]" />
+<input type="hidden" id="salesData" value="@Html.Raw(_httpContextAccessor.HttpContext.Session.GetString("CategorySalesData"))" />
+<input type="hidden" id="markCategoryStatus" value="@Html.Raw(_httpContextAccessor.HttpContext.Session.GetString("MarkCategoryStatus"))" />
+<input type="hidden" id="salesDataPerMonth" value="@Html.Raw(_httpContextAccessor.HttpContext.Session.GetString("SalesDataPerMonth"))" />
+<input type="hidden" id="markCategoryDataPerSubject" value="@Html.Raw(_httpContextAccessor.HttpContext.Session.GetString("MarkCategoryDataPerSubject"))" />
+<input type="hidden" id="subjectLists" value="@Html.Raw(_httpContextAccessor.HttpContext.Session.GetString("AllSubjects"))" />
+@section Scripts{
+    <script type="text/javascript">
+
+        $(function () {
+
+            /* jQueryKnob */
+            $('.knob').knob({
+                draw: function () {
+                    // "tron" case
+                    if (this.$.data('skin') == 'tron') {
+
+                        var a = this.angle(this.cv)  // Angle
+                            ,
+                            sa = this.startAngle          // Previous start angle
+                            ,
+                            sat = this.startAngle         // Start angle
+                            ,
+                            ea                            // Previous end angle
+                            ,
+                            eat = sat + a                 // End angle
+                            ,
+                            r = true
+
+                        this.g.lineWidth = this.lineWidth
+
+                        this.o.cursor
+                            && (sat = eat - 0.3)
+                            && (eat = eat + 0.3)
+
+                        if (this.o.displayPrevious) {
+                            ea = this.startAngle + this.angle(this.value)
+                            this.o.cursor
+                                && (sa = ea - 0.3)
+                                && (ea = ea + 0.3)
+                            this.g.beginPath()
+                            this.g.strokeStyle = this.previousColor
+                            this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, sa, ea, false)
+                            this.g.stroke()
+                        }
+
+                        this.g.beginPath()
+                        this.g.strokeStyle = r ? this.o.fgColor : this.fgColor
+                        this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, sat, eat, false)
+                        this.g.stroke()
+
+                        this.g.lineWidth = 2
+                        this.g.beginPath()
+                        this.g.strokeStyle = this.o.fgColor
+                        this.g.arc(this.xy, this.xy, this.radius - this.lineWidth + 1 + this.lineWidth * 2 / 3, 0, 2 * Math.PI, false)
+                        this.g.stroke()
+
+                        return false
+                    }
+                }
+            })
+            /* END JQUERY KNOB */
+
+            //show message
+            showMessage();
+
+            //draw PieChart
+            //drawPieChart();
+
+            //draw PieChart - overall mark
+            drawPieChart2();
+
+            //draw BarChart
+            //drawBarChart();
+
+            //drawBarChart (mark vs passed or failed)
+            drawBarChart2();
+        });
+
+        function showMessage() {
+
+            var messageTypeItem = document.getElementById("messageType");
+            var messageItem = document.getElementById("message");
+
+            if (messageTypeItem.value == "success")
+                toastr.success(messageItem.value, "Success Message");
+            else if (messageTypeItem.value == "error")
+                toastr.error(messageItem.value, "Error Message");
+            else if (messageTypeItem.value == "info")
+                toastr.info(messageItem.value, "Info Message");
+            else if (messageTypeItem.value == "warning")
+                toastr.warning(messageItem.value, "Warning Message");
+        }
+
+        function drawPieChart() {
+            var salesData = (document.getElementById("salesData").value).split(',');
+            var categories = new Array();
+            var sales = new Array();
+            var colors = new Array();
+            for (var i = 0; i < salesData.length - 1; i++) {
+                var categorySales = salesData[i].split('#');
+                if (categorySales.length > 0) {
+                    categories.push(categorySales[0]);
+                    sales.push(categorySales[1]);
+                    if (i % 2 == 0)
+                        colors.push('#f56954');
+                    else
+                        colors.push('#17a2b8');
+                }
+            }
+
+            var salesDataFinal = {
+                labels: categories,
+                datasets: [
+                    {
+                        data: sales,
+                        backgroundColor: colors,
+                    }
+                ]
+            };
+
+            var pieChartCanvas = $('#pieChart').get(0).getContext('2d');
+            var pieData = salesDataFinal;
+            var pieOptions = {
+                maintainAspectRatio: false,
+                responsive: true,
+            }
+
+            new Chart(pieChartCanvas, {
+                type: 'pie',
+                data: pieData,
+                options: pieOptions
+            });
+        }
+
+        function drawPieChart2() {
+            var markCategoryStatus = (document.getElementById("markCategoryStatus").value).split(',');
+            var categories = new Array();
+            var datasets = new Array();
+            var colors = new Array();
+            for (var i = 0; i < markCategoryStatus.length; i++) {
+                var categoryMark = markCategoryStatus[i].split('#');
+                if (categoryMark.length > 2) {
+                    categories.push(categoryMark[0]);
+                    datasets.push(categoryMark[1]);
+                    colors.push("#"+categoryMark[2]);
+                }
+            }
+
+            var marksData = {
+                labels: categories,
+                datasets: [
+                    {
+                        data: datasets,
+                        backgroundColor: colors,
+                    }
+                ]
+            };
+
+            var pieChartCanvas = $('#pieChart2').get(0).getContext('2d');
+            var pieData = marksData;
+            var pieOptions = {
+                maintainAspectRatio: false,
+                responsive: true,
+            }
+
+            new Chart(pieChartCanvas, {
+                type: 'pie',
+                data: pieData,
+                options: pieOptions
+            });
+        }
+
+        function drawBarChart() {
+            var counter = 0;
+            var salesData = (document.getElementById("salesData").value).split(',');//category sales
+            var categoryEveryMonthSales = (document.getElementById("salesCategoryDataPerMonth").value).split(',');//sales per month
+            var prevMonths = (document.getElementById("previousMonths").value).split('#');//all months
+            var monthsList = new Array();
+            var datasets = new Array();
+            var counter = 0;
+
+            for (var n = 0; n < prevMonths.length; n++) {
+                monthsList.push(prevMonths[n]);
+            }
+
+            if (salesData.length > 1) {
+                for (var j = 0; j < salesData.length; j++) {
+                    var backgroundcolor = '#f56954';
+                    var singleCategorySalesDetail = salesData[j].split('#');
+                    if (singleCategorySalesDetail.length > 1) {
+                        var categoryName = singleCategorySalesDetail[0];
+                        var categoryMonthlySales = new Array();//in every loop
+                        if (categoryEveryMonthSales.length > 1) {
+                            //iterating in the monthly sales of the selected category
+                            if (monthsList.length > 1) {
+                                for (var a = 0; a < monthsList.length; a++) {
+                                    var total = 0;
+                                    for (var i = 0; i < categoryEveryMonthSales.length; i++) {
+                                        var singleMonthSalesDetail = categoryEveryMonthSales[i].split('#');
+                                        if (singleMonthSalesDetail[2] == categoryName && singleMonthSalesDetail[0] == prevMonths[a]) {
+                                            total += parseFloat(singleMonthSalesDetail[1]);
+                                        }
+                                    }
+
+                                    categoryMonthlySales.push(total);
+                                }
+                            }
+                        }
+
+                        if (j % 2 == 0)
+                            backgroundcolor = '#f56954';
+                        else
+                            backgroundcolor = '#17a2b8';
+
+                        //dataset creating and adding to main dataset
+                        var sub_dataset = {
+                            label: categoryName,
+                            backgroundColor: backgroundcolor,
+                            borderColor: backgroundcolor,
+                            pointRadius: false,
+                            pointColor: '#3b8bba',
+                            pointStrokeColor: backgroundcolor,
+                            pointHighlightFill: '#fff',
+                            pointHighlightStroke: backgroundcolor,
+                            data: categoryMonthlySales,
+                        };
+                        datasets.push(sub_dataset);
+                    }
+                }
+            }
+
+            var areaChartData1 = {
+                labels: monthsList,
+                datasets: datasets,
+            };
+
+            var barChartCanvas = $('#barChart').get(0).getContext('2d');
+            var barChartData = $.extend(true, {}, areaChartData1);
+            var temp0 = areaChartData1.datasets[0];
+            var temp1 = areaChartData1.datasets[1];
+            barChartData.datasets[0] = temp1;
+            barChartData.datasets[1] = temp0;
+
+            var barChartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                datasetFill: false
+            };
+
+            new Chart(barChartCanvas, {
+                type: 'bar',
+                data: barChartData,
+                options: barChartOptions
+            });
+        }
+
+        function drawBarChart2() {
+
+            var markCategoryDataPerSubjects = (document.getElementById("markCategoryDataPerSubject").value).split(',');//mark category per subject
+            var subjectLists = (document.getElementById("subjectLists").value).split('#');//all subjects
+            var subjectList = new Array();
+            var failedSubjectsCounts = new Array();
+            var passedSubjectsCounts = new Array();
+            var datasets = new Array();
+
+            for (var i = 0; i < subjectLists.length; i++) {
+                var subjectName = subjectLists[i];
+                subjectList.push(subjectName);
+                
+                for (var j = 0; j < markCategoryDataPerSubjects.length; j++) {
+                    var singleMark = markCategoryDataPerSubjects[j].split('#');
+                    if (singleMark[0] == subjectName){
+                        failedSubjectsCounts.push(singleMark[1]);//failed
+                        passedSubjectsCounts.push(singleMark[2]);//passed
+                    }
+                }
+            }
+
+            var backgroundcolor = '#f56954';
+                var sub_dataset1 = {
+                    label: "FAILED",
+                    backgroundColor: backgroundcolor,
+                    borderColor: backgroundcolor,
+                    pointRadius: false,
+                    pointColor: '#3b8bba',
+                    pointStrokeColor: backgroundcolor,
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: backgroundcolor,
+                    data: failedSubjectsCounts,
+                };
+                datasets.push(sub_dataset1);
+
+                backgroundcolor = '#17a2b8';
+                var sub_dataset2 = {
+                    label: "PASSED",
+                    backgroundColor: backgroundcolor,
+                    borderColor: backgroundcolor,
+                    pointRadius: false,
+                    pointColor: '#3b8bba',
+                    pointStrokeColor: backgroundcolor,
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: backgroundcolor,
+                    data: passedSubjectsCounts,
+                };
+                datasets.push(sub_dataset2);
+                        
+            var areaChartData = {
+                labels: subjectList,
+                datasets: datasets,
+            }
+            var barChartCanvas = $('#barChart2').get(0).getContext('2d')
+            var barChartData = $.extend(true, {}, areaChartData)
+            var temp0 = areaChartData.datasets[0]
+            var temp1 = areaChartData.datasets[1]
+            barChartData.datasets[0] = temp1
+            barChartData.datasets[1] = temp0
+
+            var barChartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                datasetFill: false
+            }
+
+            new Chart(barChartCanvas, {
+                type: 'bar',
+                data: barChartData,
+                options: barChartOptions
+            })
+        }
+
+    </script>
+}

@@ -1,0 +1,171 @@
+﻿@using BALibrary.Registrar
+@inject SchoolERP.Data.ApplicationDbContext _context;
+@{
+    ViewData["Title"] = "Mark Summary Per Subject";
+    Layout = "~/Areas/Registrar/Views/Shared/_Layout.cshtml";
+
+    int counter = 0;
+    List<StudentMarkViewModel> queryResult = (List<StudentMarkViewModel>)ViewBag.queryResult;
+    int subjectGroupDetailId = Convert.ToInt32(ViewBag.subjectGroupDetailId);
+    var exams = ViewBag.exams;
+}
+
+<h1>@ViewBag.Title</h1>
+<h4>Filter @ViewBag.Title</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <!-- SEARCH FORM -->
+        <form asp-action="MIDMarkSummaryPerSubject">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-lg-2">
+                    <label class="control-label">ROSTER NAME</label>
+                    <select name="AcademicYearId" id="ClassId2" class="form-control" asp-items="ViewBag.academicYears"><option value="-1">Select</option></select>
+                </div>
+                <div class="col-lg-2">
+                    <label class="control-label">SECTION</label>
+                    <select name="AcademicYearSectionId" id="SectionId" class="form-control"></select>
+                </div>
+                <div class="col-lg-2">
+                    <label class="control-label">SUBJECT</label>
+                    <select name="SubjectGroupDetailId" id="SubjectId" class="form-control"></select>
+                </div>
+                <div class="col-lg-2">
+                    <label>&nbsp;</label><br />
+                    <input type="submit" value="VIEW SUMMARY" class="btn btn-lg btn-flat btn-outline-danger" />
+                </div>
+            </div>
+        </form>
+
+        <div class="row">
+            <div class="col-lg-12">
+                &nbsp;
+                <input type="hidden" name="SubjectGroupDetailId" value="@subjectGroupDetailId" />
+            </div>
+        </div>
+
+        @if (queryResult != null)
+        {
+            <div class="row">
+                <div class="col-lg-12">
+                    <form asp-action="GenerateMIDMarkSummaryPerSubject" target="_blank">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                @*foreach(var e in exams)
+                                {
+                                    <input type="checkbox" name="ExamGroupDetailId_@Html.Raw(e.ExamGroupDetailId)" /><br/>
+                                }*@
+                            </div>
+                        </div>
+                    </form>
+                    <table id="datatable2" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>
+                                    @Html.Raw("ID No")
+                                </th>
+                                <th>
+                                    @Html.Raw("Full Name")
+                                </th>
+                                <th>
+                                    @Html.Raw("Gender")
+                                </th>
+                                <th>
+                                    @Html.Raw("Section")
+                                </th>
+                                <th>
+                                    <table style="width:100%">
+                                        <tr>
+                                            @foreach (var e in exams)
+                                            {
+                                                <th>@Html.Raw(e.ExamName)</th>
+                                            }
+                                        </tr>
+                                    </table>
+                                </th>
+                                <th>TOTAL (100%)</th>
+                                <th>
+                                    @Html.Raw("RANK (FROM SECTION)")
+                                </th>
+                                <th>
+                                    @Html.Raw("RANK (FROM GRADE)")
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var i in queryResult)
+                            {
+                                foreach (var item in i.SubjectMarks)
+                                {
+                                    <tr>
+                                        <td>@Html.Raw(++counter)</td>
+                                        <td>@Html.Raw(i.IDNo)</td>
+                                        <td>@Html.Raw(i.FullName)</td>
+                                        <td>@Html.Raw(i.Gender)</td>
+                                        <td>@Html.Raw(i.SectionName)</td>
+                                        <td>
+                                            <table style="width:100%;">
+                                                <tr>
+                                                    @foreach (var e in exams)
+                                                    {
+                                                        foreach (var msd in item.ExamMarks)
+                                                        {
+                                                            if (msd.ExamGroupDetailId == e.ExamGroupDetailId)
+                                                            {
+                                                                <th>@Html.Raw(msd.ExamMark)</th>
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>@Html.Raw("<span style='font-weight:bold;font-size:20px;'><i><u>"+item.TotalMark+"</u></i></span>")</td>
+                                        <td>@Html.Raw("<span style='font-weight:bold;font-size:20px;'><i><u>"+i.RankFromSection+"</u></i></span>")</td>
+                                        <td>@Html.Raw("<span style='font-weight:bold;font-size:20px;'><i><u>"+i.RankFromGrade+"</u></i></span>")</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th>
+                                    @Html.Raw("ID No")
+                                </th>
+                                <th>
+                                    @Html.Raw("Full Name")
+                                </th>
+                                <th>
+                                    @Html.Raw("Gender")
+                                </th>
+                                <th>
+                                    @Html.Raw("Section")
+                                </th>
+                                <th>
+                                    <table style="width:100%">
+                                        <tr>
+                                            @foreach (var e in exams)
+                                            {
+                                                <th>@Html.Raw(e.ExamName)</th>
+                                            }
+                                        </tr>
+                                    </table>
+                                </th>
+                                <th>TOTAL (100%)</th>
+                                <th>
+                                    @Html.Raw("RANK (FROM SECTION)")
+                                </th>
+                                <th>
+                                    @Html.Raw("RANK (FROM GRADE)")
+                                </th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+</div>

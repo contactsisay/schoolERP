@@ -1,0 +1,21 @@
+﻿
+<input type="hidden" id="messageType" value="@TempData["MessageType"]" />
+<input type="hidden" id="message" value="@TempData["Message"]" />
+
+@section Scripts{
+    <script type="text/javascript">
+        $(function () {
+            var messageType = document.getElementById("messageType").value;
+            var message = document.getElementById("message").value;
+
+            if (messageType == "success")
+                toastr.success(message, "Success Message");
+            if (messageType == "error")
+                toastr.error(message, "Error Message");
+            if (messageType == "info")
+                toastr.info(message, "Info Message");
+            if (messageType == "warning")
+                toastr.warning(message, "Warning Message");
+        });
+    </script>
+}

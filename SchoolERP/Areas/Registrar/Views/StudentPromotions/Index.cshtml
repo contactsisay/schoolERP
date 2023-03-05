@@ -1,0 +1,60 @@
+﻿@model IEnumerable<BALibrary.Registrar.StudentPromotion>
+
+@{
+    ViewData["Title"] = "Student Promotions";
+    Layout = "~/Areas/Registrar/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@ViewBag.Title</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-sm btn-flat btn-outline-danger">Promote Student</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.PromotedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PromotedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsClassChange)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Student)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AcademicYearSection)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+       @* @foreach (var item in Model) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PromotedDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PromotedBy)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsClassChange)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Student.BloogGroup)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AcademicYearSection.Id)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+        }*@
+    </tbody>
+</table>

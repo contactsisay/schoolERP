@@ -1,0 +1,129 @@
+﻿@using BALibrary.Registrar
+@inject SchoolERP.Data.ApplicationDbContext _context;
+@{
+    ViewData["Title"] = "Student Information";
+    Layout = "~/Areas/Registrar/Views/Shared/_Layout.cshtml";
+
+    int counter = 0;
+}
+
+<h4>@ViewData["Title"]</h4>
+
+<p>
+    <a asp-action="Create" class="btn btn-sm btn-flat btn-outline-danger">Create New Student</a>
+    <a asp-action="ImportFromExcel" class="btn btn-sm btn-flat btn-outline-dark"> Import From Excel</a>
+</p>
+
+<table id="datatable" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>
+                @Html.Raw("ID No")
+            </th>
+            <th>
+                @Html.Raw("First Name")
+            </th>
+            <th>
+                @Html.Raw("Middle Name")
+            </th>
+            <th>
+                @Html.Raw("Last Name")
+            </th>
+            <th>
+                @Html.Raw("Gender")
+            </th>
+            <th>
+                @Html.Raw("Admission Date")
+            </th>
+            <th>
+                @Html.Raw("Class")
+            </th>
+            <th>
+                @Html.Raw("Section")
+            </th>
+            <th>
+                @Html.Raw("NEXT_ACTION")
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in ViewBag.queryResult)
+        {
+            counter = counter + 1;
+            int sId = Convert.ToInt32(item.Id);
+            var studentPromotions = _context.StudentPromotions.Where(a => a.StudentId == sId).OrderByDescending(a=>a.Id).ToList();
+            StudentPromotion studentPromotion;
+            if (studentPromotions.Count > 0) {
+                studentPromotion = (StudentPromotion)studentPromotions[0];
+            }
+
+            <tr>
+                <td>
+                    @Html.Raw(counter)
+                </td>
+                <td>
+                    @Html.Raw(item.IDNo)
+                </td>
+                <td>
+                    @Html.Raw(item.FirstName)
+                </td>
+                <td>
+                    @Html.Raw(item.MiddleName)
+                </td>
+                <td>
+                    @Html.Raw(item.LastName)
+                </td>
+                <td>
+                    @Html.Raw(item.Gender)
+                </td>
+                <td>
+                    @Html.Raw(item.AdmissionDate)
+                </td>
+                <td>
+                    @Html.Raw(item.ClassName)
+                </td>
+                <td>
+                    @Html.Raw(item.SectionName)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-list"></i></a> |
+                    <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-edit"></i></a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa fa-trash"></i></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>#</th>
+            <th>
+                @Html.Raw("ID No")
+            </th>
+            <th>
+                @Html.Raw("First Name")
+            </th>
+            <th>
+                @Html.Raw("Middle Name")
+            </th>
+            <th>
+                @Html.Raw("Last Name")
+            </th>
+            <th>
+                @Html.Raw("Gender")
+            </th>
+            <th>
+                @Html.Raw("Admission Date")
+            </th>
+            <th>
+                @Html.Raw("Class")
+            </th>
+            <th>
+                @Html.Raw("Section")
+            </th>
+            <th>
+                @Html.Raw("NEXT_ACTION")
+            </th>
+        </tr>
+    </tfoot>
+</table>

@@ -1,0 +1,186 @@
+﻿@model BALibrary.HR.Employee
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Areas/HR/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Employee</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="row">
+                <div class="col-lg-3" style="border-right:2px solid darkred;">
+                    <div class="form-group" style="text-align:center;">
+                        <a href="#">
+                            <img src="~/images/no-image.png" width="200px" height="150px" />
+                            <input type="file" name="PhotoPath" class="form-control" />
+                        </a>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">ACCOUNT INFORMATION</label>
+                        <input type="email" name="EmailAddress" placeholder="Email Address" required="required" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="Password" required="required" class="form-control" placeholder="Password" />
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="ConfirmPassword" class="form-control" placeholder="Confirm Password" />
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-sm btn-outline-dark" />
+                        <a asp-action="Index" class="btn btn-sm btn-outline-primary">Back to List</a>
+                    </div>
+                </div>
+                <div class="col-lg-9" style="border-left:2px solid darkred;">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label asp-for="Code" class="control-label"></label>
+                            <input asp-for="Code" class="form-control" />
+                            <span asp-validation-for="Code" class="text-danger"></span>
+                        </div>
+                        <div class="col-lg-3">
+                            <label asp-for="FirstName" class="control-label"></label>
+                            <input asp-for="FirstName" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="col-lg-3">
+                            <label asp-for="MiddleName" class="control-label"></label>
+                            <input asp-for="MiddleName" class="form-control" />
+                            <span asp-validation-for="MiddleName" class="text-danger"></span>
+                        </div>
+                        <div class="col-lg-3">
+                            <label asp-for="LastName" class="control-label"></label>
+                            <input asp-for="LastName" class="form-control" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- SPACER -->
+                    <div class="row">
+                        <div class="col-lg-12">&nbsp;</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label asp-for="JobPositionId" class="control-label"></label>
+                            <select asp-for="JobPositionId" class="form-control" asp-items="@ViewBag.JobPositionId"><option value="-1">Select</option></select>
+                            <span asp-validation-for="JobPositionId" class="text-danger"></span>
+                        </div>
+                        <div class="col-lg-3">
+                            <label asp-for="UserTypeId" class="control-label"></label>
+                            <select asp-for="UserTypeId" class="form-control" asp-items="@ViewBag.UserTypeId"><option value="-1">Select</option></select>
+                            <span asp-validation-for="UserTypeId" class="text-danger"></span>
+                        </div>
+                        <div class="col-lg-3">
+                            <label asp-for="EmploymentTypeId" class="control-label"></label>
+                            <select asp-for="EmploymentTypeId" class="form-control" asp-items="@ViewBag.EmploymentTypeId"><option value="-1">Select</option></select>
+                            <span asp-validation-for="EmploymentTypeId" class="text-danger"></span>
+                        </div>
+                        <div class="col-lg-3">
+                            <label asp-for="RoleId" class="control-label"></label>
+                            <select asp-for="RoleId" class="form-control" asp-items="@ViewBag.RoleId"></select>
+                        </div>
+                    </div>
+
+                     <!-- SPACER -->
+                    <div class="row">
+                        <div class="col-lg-12">&nbsp;</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label asp-for="Dob" class="control-label"></label>
+                            <input asp-for="Dob" class="form-control" />
+                            <span asp-validation-for="Dob" class="text-danger"></span>
+                        </div>
+                        <div class="col-lg-3">
+                            <label asp-for="JoinedDate" class="control-label"></label>
+                            <input asp-for="JoinedDate" class="form-control" />
+                            <span asp-validation-for="JoinedDate" class="text-danger"></span>
+                        </div>
+                        <div class="col-lg-3">
+                            <label asp-for="PhoneNo" class="control-label"></label>
+                            <input asp-for="PhoneNo" class="form-control" />
+                            <span asp-validation-for="PhoneNo" class="text-danger"></span>
+                        </div>
+                        <div class="col-lg-3">
+                            <label asp-for="Designation" class="control-label"></label>
+                            <input asp-for="Designation" class="form-control" />
+                            <span asp-validation-for="Designation" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <!-- SPACER -->
+                    <div class="row">
+                        <div class="col-lg-12">&nbsp;</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label asp-for="Gender" class="control-label"></label>
+                            <select asp-for="Gender" class="form-control" asp-items="@ViewBag.Gender"></select>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
+                        </div>
+                        <div class="col-lg-3">
+                            <label asp-for="MotherName" class="control-label"></label>
+                            <input asp-for="MotherName" class="form-control" />
+                        </div>
+                        <div class="col-lg-3">
+                            <label asp-for="EmergencyContactNo" class="control-label"></label>
+                            <input asp-for="EmergencyContactNo" class="form-control" />
+                        </div>
+                        <div class="col-lg-3">
+                            <label asp-for="Qualification" class="control-label"></label>
+                            <input asp-for="Qualification" class="form-control" />
+                        </div>
+                    </div>
+
+                    <!-- SPACER -->
+                    <div class="row">
+                        <div class="col-lg-12">&nbsp;</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label asp-for="WorkExperience" class="control-label"></label>
+                            <input asp-for="WorkExperience" class="form-control" />
+                        </div>
+                        <div class="col-lg-9">
+                            <label asp-for="Note" class="control-label"></label>
+                            <input asp-for="Note" class="form-control" />
+                        </div>
+                    </div>
+
+                    <!-- SPACER -->
+                    <div class="row">
+                        <div class="col-lg-12">&nbsp;</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label asp-for="CurrentAddress" class="control-label"></label>
+                            <textarea asp-for="CurrentAddress" class="form-control"></textarea>
+                        </div>
+                        <div class="col-lg-6">
+                            <label asp-for="PermanentAddress" class="control-label"></label>
+                            <textarea asp-for="PermanentAddress" class="form-control"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- SPACER -->
+                    <div class="row">
+                        <div class="col-lg-12">&nbsp;</div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>

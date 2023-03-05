@@ -1,0 +1,79 @@
+﻿@model BALibrary.Admin.RoleModuleException
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>RoleModuleException</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.TableName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.TableName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Browse)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Browse)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Read)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Read)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Edit)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Edit)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Add)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Add)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Delete)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Delete)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FullyGranted)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FullyGranted)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FullyDenied)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FullyDenied)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.AccessRightName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.AccessRightName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.RoleModule)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.RoleModule.Id)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

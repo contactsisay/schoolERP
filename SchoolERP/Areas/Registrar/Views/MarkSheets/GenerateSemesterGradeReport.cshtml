@@ -1,0 +1,43 @@
+﻿@using BALibrary.Registrar;
+@inject SchoolERP.Data.ApplicationDbContext _context;
+@{
+    ViewData["Title"] = "Generate Semester Grade Report";
+    Layout = "~/Areas/Registrar/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <!-- Main content -->
+                <div class="invoice p-3 mb-3">
+                    <!-- Table row -->
+                    <div class="row" style="max-height:500px;overflow-y:scroll;">
+                        <div class="col-12 table-responsive">
+                            
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+
+                    <!-- this row will not appear when printing -->
+                    <div class="row no-print">
+                        <div class="col-12">
+                            <a href="#" rel="noopener" target="_blank" onclick="onPrint()" class="btn btn-sm btn-outline-dark"><i class="fas fa-print"></i> Print Grade Report</a>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- /.invoice -->
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+    //window.addEventListener("load", window.print());
+    function onPrint() {
+        window.addEventListener("load", window.print());
+    }
+</script>

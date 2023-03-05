@@ -1,0 +1,108 @@
+﻿@using BALibrary.Inventory;
+@using BALibrary.Sales;
+@model BALibrary.Sales.Invoice
+@inject SchoolERP.Data.ApplicationDbContext _context;
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Areas/Sales/Views/Shared/_Layout.cshtml";
+    var counter = 1;
+    var invoiceDetails = ViewBag.invoiceDetails;
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Invoice</h4>
+    <hr />
+</div>
+
+<div class="row">
+    <div class="col-lg-4">
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.InvoiceNo)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.InvoiceNo)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.InvoiceTotal)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.InvoiceTotal)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.InvoiceDate)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.InvoiceDate)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Customer)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Customer.Name)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.InvoiceType)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.InvoiceType.Name)
+            </dd>
+        </dl>
+    </div>
+    <div class="col-lg-8">
+        <table>
+            <tr>
+                <th colspan="4">INVOICE ITEMS</th>
+            </tr>
+        </table>
+        <br/>
+        <table id="datatable">
+            <tr>
+                <th>#</th>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Total Price</th>
+            </tr>
+            @foreach(InvoiceDetail idd in invoiceDetails)
+            {
+                ProductBatch productBatch = _context.ProductBatches.Find(idd.ProductBatchId);
+                <tr>
+                    <td>@Html.Raw(++counter)</td>
+                    <td>
+                        @Html.Raw(_context.Products.Find(productBatch.ProductId).Name)
+                    </td>
+                    <td>
+                        @Html.Raw(idd.Quantity)
+                    </td>
+                    <td>
+                        @Html.Raw(idd.SellingPrice)
+                    </td>
+                    <td>
+                        @Html.Raw(idd.RowTotal)
+                    </td>
+                </tr>
+            }
+            <tr>
+                <th>#</th>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Total Price</th>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">&nbsp;</div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+        <a asp-action="Index">Back to List</a>
+    </div>
+</div>

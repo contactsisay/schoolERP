@@ -1,0 +1,194 @@
+﻿@model BALibrary.Registrar.Student
+@inject SchoolERP.Data.ApplicationDbContext _context;
+@{
+    ViewData["Title"] = "Mark Sheets";
+    Layout = "~/Areas/Teacher/Views/Shared/_Layout.cshtml";
+
+    int counter = 0;
+    var queryResult = ViewBag.queryResult;
+    var academicYearId = ViewBag.aYId;
+    var academicYearSectionId = ViewBag.academicYearSectionId;
+    var subjectGroupDetailId = ViewBag.subjectGroupDetailId;
+    var examGroupDetailId = ViewBag.examGroupDetailId;
+    var exams = ViewBag.exams;
+}
+
+<h1>@ViewBag.Title</h1>
+
+<h4>Filter @ViewBag.Title</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <!-- SEARCH FORM -->
+        <form asp-action="Index">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-lg-2">
+                    <label class="control-label">CLASS</label>
+                    <select name="ClassId" id="ClassId2" class="form-control" asp-items="ViewBag.ClassId"></select>
+                </div>
+                <div class="col-lg-2">
+                    <label class="control-label">SECTION</label>
+                    <select name="SectionId" id="SectionId" class="form-control"></select>
+                </div>
+                <div class="col-lg-2">
+                    <label class="control-label">SUBJECT</label>
+                    <select name="SubjectId" id="SubjectId" class="form-control"></select>
+                </div>
+                <div class="col-lg-2">
+                    <label class="control-label">EXAM</label>
+                    <select name="ExamId" id="ExamId" class="form-control"></select>
+                </div>
+                <div class="col-lg-2">
+                    <label>&nbsp;</label><br />
+                    <input type="submit" value="Load Students" class="btn btn-lg btn-flat btn-outline-dark" />
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="col-lg-12">&nbsp;</div>
+        </div>
+        <!-- SAVING FORM -->
+        <form asp-action="Create1">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <input type="hidden" name="AYId" value="@academicYearId" />
+                    <input type="hidden" name="AcademicYearSectionId" value="@academicYearSectionId" />
+                    <input type="hidden" name="SubjectGroupDetailId" value="@subjectGroupDetailId" />
+                    <input type="hidden" name="ExamGroupDetailId" value="@examGroupDetailId" /><br />
+                    <input type="submit" value="View Marks" class="btn btn-sm btn-flat btn-outline-danger" />
+                    <a asp-controller="MarkSheets" asp-action="Index" class="btn btn-sm btn-flat btn-outline-dark">Back to List</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">&nbsp;</div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+
+                    @if (queryResult != null)
+                    {
+                        <div class="row">
+                            <div class="col-lg-12">
+
+                                <table id="datatable2" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>
+                                                @Html.Raw("ID No")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Full Name")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Gender")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Class")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Section")
+                                            </th>
+                                            <th>
+                                                <table style="width:100%">
+                                                    <tr>
+                                                        @foreach (var e in exams)
+                                                        {
+                                                            <td>@Html.Raw(e.ExamName)</td>
+                                                        }
+                                                    </tr>
+                                                </table>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in queryResult)
+                                        {
+                                            counter = counter + 1;
+
+                                            <tr>
+                                                <td>
+                                                    @Html.Raw(counter)
+                                                </td>
+                                                <td>
+                                                    @Html.Raw(item.IDNo)
+                                                    <input type="hidden" name="StudentPromotionId_@counter" value="@item.StudentPromotionId">
+                                                </td>
+                                                <td>
+                                                    @Html.Raw(item.FullName)
+                                                </td>
+                                                <td>
+                                                    @Html.Raw(item.Gender)
+                                                </td>
+                                                <td>
+                                                    @Html.Raw("Grade "+item.ClassName)
+                                                </td>
+                                                <td>
+                                                    @Html.Raw(item.ClassName + "("+item.SectionName+")")
+                                                </td>
+                                                <td>
+                                                    <table style="width:100%">
+                                                        <tr>
+                                                            @foreach (var e in exams)
+                                                            {
+                                                                <td>
+                                                                    <input type="text" class="form-control" name="@Html.Raw("mark_"+counter+"_"+e.ExamId)" />
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>
+                                                @Html.Raw("ID No")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Full Name")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Gender")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Class")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Section")
+                                            </th>
+                                            <th>
+                                                <table style="width:100%">
+                                                    <tr>
+                                                        @foreach (var e in exams)
+                                                        {
+                                                            <td>@Html.Raw(e.ExamName)</td>
+                                                        }
+                                                    </tr>
+                                                </table>
+                                            </th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <p><span class="text-lg bg-gradient-danger text-white text-bold">SELECT CLASS & SECTION FIRST!</span> <br />To see Roster!</p>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>

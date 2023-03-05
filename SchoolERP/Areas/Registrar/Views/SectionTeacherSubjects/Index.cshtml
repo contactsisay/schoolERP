@@ -1,0 +1,104 @@
+﻿@model IEnumerable<BALibrary.Registrar.SectionTeacherSubject>
+
+@{
+    ViewData["Title"] = "Teacher Section Subject Assignments";
+    Layout = "~/Areas/Registrar/Views/Shared/_Layout.cshtml";
+    int counter = 0;
+}
+
+<h1>@ViewBag.Title</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-flat btn-outline-danger">Create New</a>
+</p>
+
+<div class="row">
+    <div class="col-lg-12">
+
+        <table id="datatable2" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>
+                        @Html.Raw("Session Name")
+                    </th>
+                    <th>
+                        @Html.Raw("Section Name")
+                    </th>
+                    <th>
+                        @Html.Raw("Subject Name")
+                    </th>
+                    <th>
+                        @Html.Raw("Teacher Name")
+                    </th>
+                    <th>
+                        @Html.Raw("Teacher Email Address")
+                    </th>
+                    <th>
+                        @Html.Raw("Teacher Phone No")
+                    </th>
+                    <th>Actions </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ViewBag.queryResult)
+                {
+                    counter = counter + 1;
+
+                    <tr>
+                        <td>
+                            @Html.Raw(counter)
+                        </td>
+                        <td>
+                            @Html.Raw(item.SessionName)
+                        </td>
+                        <td>
+                            @Html.Raw(item.SectionName)
+                        </td>
+                        <td>
+                            @Html.Raw(item.SubjectName)
+                        </td>
+                        <td>
+                            @Html.Raw(item.TeacherName)
+                        </td>
+                        <td>
+                            @Html.Raw(item.TeacherEmailAddress)
+                        </td>
+                        <td>
+                            @Html.Raw(item.TeacherPhone)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>#</th>
+                    <th>
+                        @Html.Raw("Session Name")
+                    </th>
+                    <th>
+                        @Html.Raw("Section Name")
+                    </th>
+                    <th>
+                        @Html.Raw("Subject Name")
+                    </th>
+                    <th>
+                        @Html.Raw("Teacher Name")
+                    </th>
+                    <th>
+                        @Html.Raw("Teacher Email Address")
+                    </th>
+                    <th>
+                        @Html.Raw("Teacher Phone No")
+                    </th>
+                    <th>Actions </th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

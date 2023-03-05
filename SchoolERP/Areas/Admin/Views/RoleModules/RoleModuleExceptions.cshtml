@@ -1,0 +1,203 @@
+﻿@model IEnumerable<BALibrary.Admin.RoleModuleException>
+@using BALibrary.Admin
+@{
+    ViewData["Title"] = "Role Module Exceptions";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+    RoleModule roleModule = ((List<RoleModule>)ViewData["RoleModules"])[0];
+    List<SelectListItem> tableNames = (List<SelectListItem>)ViewData["TableNames"];//module tables
+
+    int counter = 0;
+}
+
+<h4>@ViewData["Title"]</h4>
+
+<p>
+    <!--<a class="btn btn-sm btn-flat btn-outline-danger" asp-action="Create" asp-route-id="@roleModule.Id">Create New Exceptions</a>&nbsp;&nbsp;-->
+    <a asp-controller="RoleModules" asp-action="Index" asp-route-id="@roleModule.RoleId" class="btn btn-sm btn-outline-danger">Back to Role Modules</a>
+</p>
+
+<div class="row" style="border: 1px solid #0a1a48;">
+    <div class="col-lg-3">
+        <label>Role Name</label><br />
+        <span>@roleModule.Role.Name</span>
+    </div>
+    <div class="col-lg-3">
+        <label>Module Name</label><br />
+        <span>@Html.Raw(Common.GetModuleText((Common.ModuleName)roleModule.ModuleId))</span>
+    </div>
+    <div class="col-lg-3">
+        <label>Status</label><br />
+        <span>@Html.Raw(roleModule.Status == 1 ? "ACTIVE" : "IN-ACTIVE")</span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12"><hr /></div>
+</div>
+
+<form asp-action="SaveRoleModuleExceptions" method="post">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <input type="hidden" name="roleModuleId" value="@Html.Raw(@roleModule.Id)" />
+
+            <div class="row" style="border:2px solid #000;">
+                <div class="col-lg-3"><strong>TABLE NAME</strong></div>
+                <div class="col-lg-5" style="text-align:center;">
+                    <strong>ACCESS RIGHT</strong>
+                    <div class="row" style="border:2px solid #000;">
+                        <div class="col-lg-3">BROWSE</div>
+                        <div class="col-lg-2">READ</div>
+                        <div class="col-lg-2">EDIT</div>
+                        <div class="col-lg-2">ADD</div>
+                        <div class="col-lg-3">DELETE</div>
+                    </div>
+                </div>
+                <div class="col-lg-2" style="text-align:center;"><strong>FULLY GRANTED</strong></div>
+                <div class="col-lg-2" style="text-align:center;"><strong>FULLY DENIED</strong></div>
+            </div>
+
+            @foreach (SelectListItem tableName in tableNames)
+            {
+                counter = counter + 1;
+                List<RoleModuleException> tableRoleModuleExceptions = Model.Where(trme => trme.TableName == tableName.Text).ToList();
+                if (tableRoleModuleExceptions.Count > 0)//if table exception is already added
+                {
+                    RoleModuleException roleModuleException = tableRoleModuleExceptions[0];
+                    <div class="row" style="border-bottom:1px solid #000;">
+                        <div class="col-lg-3">@Html.Raw(counter + " - " + tableName.Text.ToUpper() + " - (SAVED)")</div>
+                        <div class="col-lg-5" style="text-align:center;">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <input type="checkbox" name="@Html.Raw(tableName.Text + "_b")" @Html.Raw((roleModuleException.Browse ? "checked='checked'" : "")) id="@Html.Raw("b_" + counter)" onchange="unCheckBothFullAccess(this.id)" />
+                                </div>
+                                <div class="col-lg-2">
+                                    <input type="checkbox" name="@Html.Raw(tableName.Text + "_r")" @Html.Raw((roleModuleException.Read ? "checked='checked'" : "")) id="@Html.Raw("r_" + counter)" onchange="unCheckBothFullAccess(this.id)" />
+                                </div>
+                                <div class="col-lg-2">
+                                    <input type="checkbox" name="@Html.Raw(tableName.Text + "_e")" @Html.Raw((roleModuleException.Edit ? "checked='checked'" : "")) id="@Html.Raw("e_" + counter)" onchange="unCheckBothFullAccess(this.id)" />
+                                </div>
+                                <div class="col-lg-2">
+                                    <input type="checkbox" name="@Html.Raw(tableName.Text + "_a")" @Html.Raw((roleModuleException.Add ? "checked='checked'" : "")) id="@Html.Raw("a_" + counter)" onchange="unCheckBothFullAccess(this.id)" />
+                                </div>
+                                <div class="col-lg-3">
+                                    <input type="checkbox" name="@Html.Raw(tableName.Text + "_d")" @Html.Raw((roleModuleException.Delete ? "checked='checked'" : "")) id="@Html.Raw("d_" + counter)" onchange="unCheckBothFullAccess(this.id)" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2" style="text-align:center;">
+                            <input type="checkbox" name="@Html.Raw(tableName.Text + "_fully_granted")" id="@Html.Raw("fully_granted_" + counter)" onchange="checkAll(this.id)" @Html.Raw(roleModuleException.FullyGranted ? "checked='checked'":"")  />
+                        </div>
+                        <div class="col-lg-2" style="text-align:center;">
+                            <input type="checkbox" name="@Html.Raw(tableName.Text + "_fully_denied")" id="@Html.Raw("fully_denied_" + counter)" onchange="unCheckAll(this.id)" checked="checked" @Html.Raw(roleModuleException.FullyDenied ? "checked='checked'":"") />
+                        </div>
+                    </div>
+                }
+                else //if no exception with the current table
+                {
+                    <div class="row" style="border-bottom:2px solid #000;background-color:bisque;">
+                        <div class="col-lg-3">@Html.Raw(counter + " - " + tableName.Text.ToUpper() + " - (DEFAULT)")</div>
+                        <div class="col-lg-5" style="text-align:center;">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <input type="checkbox" name="@Html.Raw(tableName.Text + "_b")" checked="checked" id="@Html.Raw("b_" + counter)" onchange="unCheckBothFullAccess(this.id)" />
+                                </div>
+                                <div class="col-lg-2">
+                                    <input type="checkbox" name="@Html.Raw(tableName.Text + "_r")" checked="checked" id="@Html.Raw("r_" + counter)" onchange="unCheckBothFullAccess(this.id)" />
+                                </div>
+                                <div class="col-lg-2">
+                                    <input type="checkbox" name="@Html.Raw(tableName.Text + "_e")" checked="checked" id="@Html.Raw("e_" + counter)" onchange="unCheckBothFullAccess(this.id)" />
+                                </div>
+                                <div class="col-lg-2">
+                                    <input type="checkbox" name="@Html.Raw(tableName.Text + "_a")" checked="checked" id="@Html.Raw("a_" + counter)" onchange="unCheckBothFullAccess(this.id)" />
+                                </div>
+                                <div class="col-lg-3">
+                                    <input type="checkbox" name="@Html.Raw(tableName.Text + "_d")" checked="checked" id="@Html.Raw("d_" + counter)" onchange="unCheckBothFullAccess(this.id)" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2" style="text-align:center;">
+                            <input type="checkbox" name="@Html.Raw(tableName.Text + "_fully_granted")" id="@Html.Raw("fully_granted_" + counter)" checked="checked" onchange="checkAll(this.id)" />
+                        </div>
+                        <div class="col-lg-2" style="text-align:center;">
+                            <input type="checkbox" name="@Html.Raw(tableName.Text + "_fully_denied")" id="@Html.Raw("fully_denied_" + counter)" onchange="unCheckAll(this.id)"/>
+                        </div>
+                    </div>
+                }
+            }
+
+            <div class="row" style="border:2px solid #000;">
+                <div class="col-lg-3"><strong>TABLE NAME</strong></div>
+                <div class="col-lg-5" style="text-align:center;">
+                    <strong>ACCESS RIGHT</strong>
+                    <div class="row" style="border:2px solid #000;">
+                        <div class="col-lg-3">BROWSE</div>
+                        <div class="col-lg-2">READ</div>
+                        <div class="col-lg-2">EDIT</div>
+                        <div class="col-lg-2">ADD</div>
+                        <div class="col-lg-3">DELETE</div>
+                    </div>
+                </div>
+                <div class="col-lg-2" style="text-align:center;"><strong>FULLY GRANTED</strong></div>
+                <div class="col-lg-2" style="text-align:center;"><strong>FULLY DENIED</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">&nbsp;</div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <input type="submit" value="Save Changes" class="btn btn-sm btn-flat btn-outline-danger" />
+            <button class="btn btn-sm btn-flat btn-outline-dark">Cancel</button>
+        </div>
+    </div>
+
+</form>
+<script>
+    function checkAll(id){
+        var counter = id.split('_')[2];
+        $("#b_" + counter).prop("checked", true);
+        $("#r_" + counter).prop("checked", true);
+        $("#e_" + counter).prop("checked", true);
+        $("#a_" + counter).prop("checked", true);
+        $("#d_" + counter).prop("checked", true);
+        $("#fully_denied_" + counter).prop("checked", false);
+        $("#fully_granted_" + counter).prop("checked", true);
+    }
+
+    function unCheckAll(id){
+        var counter = id.split('_')[2];
+        $("#b_" + counter).prop("checked", false);
+        $("#r_" + counter).prop("checked", false);
+        $("#e_" + counter).prop("checked", false);
+        $("#a_" + counter).prop("checked", false);
+        $("#d_" + counter).prop("checked", false);
+        $("#fully_denied_" + counter).prop("checked", true);
+        $("#fully_granted_" + counter).prop("checked", false);
+    }
+
+    function unCheckBothFullAccess(id){
+        var counter = id.split('_')[1];
+       
+        var b = $("#b_" + counter).checked;
+        var r = $("#r_" + counter).checked;
+        var e = $("#e_" + counter).checked;
+        var a = $("#a_" + counter).checked;
+        var d = $("#d_" + counter).checked;
+        
+        if (b.checked && r.checked && e.checked && a.checked && d.checked){
+            $("#full_denied_" + counter).prop("checked", false);
+            $("#full_granted_" + counter).prop("checked", true);
+        }
+
+        if (!b.checked && !r.checked && !e.checked && !a.checked && !d.checked) {
+            $("#full_denied_" + counter).prop("checked", true);
+            $("#full_granted_" + counter).prop("checked", false);
+        }
+    }
+
+</script>

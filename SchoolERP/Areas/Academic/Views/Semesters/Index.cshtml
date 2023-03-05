@@ -1,0 +1,59 @@
+﻿@model IEnumerable<BALibrary.Academic.Semester>
+
+@{
+    ViewData["Title"] = "Semesters";
+    Layout = "~/Areas/Academic/Views/Shared/_Layout.cshtml";
+
+    int counter = 0;
+}
+
+<h4>@ViewData["Title"]</h4>
+
+<p>
+    <a asp-action="Create" class="btn btn-sm btn-flat btn-outline-dark">Create New Semester</a>
+</p>
+
+<table id="datatable" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>
+                @Html.Raw("Name")
+            </th>
+            <th>
+                @Html.Raw("NEXT_ACTION")
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            counter = counter + 1;
+
+            <tr>
+                <td>
+                    @Html.Raw(counter)
+                </td>
+                <td>
+                    @Html.Raw(item.Name)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-list"></i></a> |
+                    <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-edit"></i></a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa fa-trash"></i></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>#</th>
+            <th>
+                @Html.Raw("Name")
+            </th>
+            <th>
+                @Html.Raw("NEXT_ACTION")
+            </th>
+        </tr>
+    </tfoot>
+</table>

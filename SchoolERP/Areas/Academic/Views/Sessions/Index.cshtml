@@ -1,0 +1,95 @@
+﻿@model IEnumerable<BALibrary.Academic.Session>
+
+@{
+    ViewData["Title"] = "Sessions";
+    Layout = "~/Areas/Academic/Views/Shared/_Layout.cshtml";
+
+    int counter = 0;
+}
+
+<h4>@ViewData["Title"]</h4>
+
+<p>
+    <a asp-action="Create" class="btn btn-sm btn-flat btn-outline-dark">Create New Session</a>
+</p>
+
+<table id="datatable" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>
+                @Html.Raw("School")
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Year)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GradingRuleGroup)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OpeningDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ClosingDate)
+            </th>
+            <th>
+                @Html.Raw("NEXT_ACTION")
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            counter = counter + 1;
+
+            <tr>
+                <td>
+                    @Html.Raw(counter)
+                </td>
+                <td>
+                    @Html.Raw(item.SchoolType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Year)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GradingRuleGroup.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OpeningDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClosingDate)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-list"></i></a> |
+                    <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-edit"></i></a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa fa-trash"></i></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>#</th>
+            <th>
+                @Html.Raw("School")
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Year)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GradingRuleGroup)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OpeningDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ClosingDate)
+            </th>
+            <th>
+                @Html.Raw("NEXT_ACTION")
+            </th>
+        </tr>
+    </tfoot>
+</table>

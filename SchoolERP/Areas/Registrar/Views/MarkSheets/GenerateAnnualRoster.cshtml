@@ -1,0 +1,219 @@
+﻿@inject SchoolERP.Data.ApplicationDbContext _context;
+@using BALibrary.Registrar;
+@{
+    ViewData["Title"] = "Generate Annual Roster";
+    Layout = "~/Areas/Registrar/Views/Shared/_Layout.cshtml";
+
+    int counter = 0;
+    var annualMarkSummaries = _context.SMSummaries.ToList();
+    List<SMSummary> semesterISummaries = new List<SMSummary>();
+    List<SMSummary> semesterIISummaries = new List<SMSummary>();
+    List<SMSummaryDetail> smSummaryDetails = new List<SMSummaryDetail>();
+    List<SMSummaryDetail> smSummaryIIDetails = new List<SMSummaryDetail>();
+
+    if (ViewBag.sectionStudents != null)
+    {
+        var sectionStudents = ViewBag.sectionStudents;
+        var academicYears = ViewBag.academicYears;
+
+        int semesterI = Convert.ToInt32(academicYears[0].aYId);
+        int semesterII = Convert.ToInt32(academicYears[1].aYId);
+        semesterISummaries = annualMarkSummaries.Where(a => a.AcademicYearId == semesterI).OrderBy(a => a.IDNo).ToList();
+        semesterIISummaries = annualMarkSummaries.Where(a => a.AcademicYearId == semesterII).OrderBy(a => a.IDNo).ToList();
+
+        //sample subject list
+        int smSummaryId = Convert.ToInt32(semesterISummaries[0].Id);
+        int smSummaryIIId = Convert.ToInt32(semesterIISummaries[0].Id);
+        smSummaryDetails = _context.SMSummaryDetails.Where(a => a.SMSummaryId == smSummaryId).ToList();
+        smSummaryIIDetails = _context.SMSummaryDetails.Where(a => a.SMSummaryId == smSummaryIIId).ToList();
+    }
+    
+}
+
+<h1>@ViewBag.Title</h1>
+<h4>Filter @ViewBag.Title</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <!-- SEARCH FORM -->
+        <form asp-action="GenerateAnnualRoster">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-lg-2">
+                    <label class="control-label">SESSION NAME</label>
+                    <select name="SessionId" id="SessionId" class="form-control" asp-items="@ViewBag.sessions"><option value="-1">Select</option></select>
+                </div>
+                <div class="col-lg-2">
+                    <label class="control-label">CLASS NAME</label>
+                    <select name="ClassId" id="ClassId4" class="form-control"><option value="-1">Select</option></select>
+                </div>
+                <div class="col-lg-2">
+                    <label class="control-label">SECTION NAME</label>
+                    <select name="AcademicYearSectionId" id="SectionId4" class="form-control"></select>
+                </div>
+                <div class="col-lg-2">
+                    <label>&nbsp;</label><br />
+                    <input type="submit" value="LOAD ANNUAL ROSTER" class="btn btn-lg btn-flat btn-outline-danger" />
+                </div>
+            </div>
+        </form>
+
+        <div class="row">
+            <div class="col-lg-12">&nbsp;</div>
+        </div>
+
+        @if (ViewBag.sectionStudents != null)
+        {
+            <div class="row">
+                <div class="col-lg-12">
+                    <form asp-action="GenerateAnnualGradeReport" target="_blank">
+                        <input type="hidden" value="@ViewBag.sessionId" name="SessionId" />
+                        <input type="hidden" value="@ViewBag.classId" name="ClassId" />
+                        <input type="hidden" value="@ViewBag.academicYearSectionId" name="AcademicYearSectionId" />
+                        <input type="submit" value="Generate Annual Grade Report" class="btn btn-flat btn-md btn-outline-danger" />
+
+                        <div class="row">
+                            <div class="col-lg-12">&nbsp;</div>
+                        </div>
+
+                        <div class="row" style="overflow-x:scroll;">
+                            <div class="col-lg-12" style="overflow-x:scroll;">
+                                <table id="datatable2" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th><input type="checkbox" name="chkAll" id="chkAll" /></th>
+                                            <th>
+                                                @Html.Raw("ID No")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Full Name")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Gender")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Section")
+                                            </th>
+                                            <th>
+                                                <table style="width:100%">
+                                                    <tr>
+                                                        <th style="text-align:center;" colspan="@smSummaryDetails.Count">SEMESTER I</th>
+                                                        <th style="text-align:center;" colspan="@smSummaryIIDetails.Count">SEMESTER II</th>
+                                                    </tr>
+                                                    <tr>
+                                                        @{
+                                                            @for (int j = 0; j < smSummaryDetails.Count; j++)
+                                                            {
+                                                                var subjectD = _context.SubjectGroupDetails.Find(smSummaryDetails[j].SubjectGroupDetailId);
+                                                                var subject = _context.Subjects.Find(subjectD.SubjectId);
+                                                                <th>@Html.Raw(subject.Code)</th>
+                                                            }
+                                                            @for (int j = 0; j < smSummaryIIDetails.Count; j++)
+                                                            {
+                                                                var subjectD = _context.SubjectGroupDetails.Find(smSummaryDetails[j].SubjectGroupDetailId);
+                                                                var subject = _context.Subjects.Find(subjectD.SubjectId);
+                                                                <th>@Html.Raw(subject.Code)</th>
+                                                            }
+                                                        }
+                                                    </tr>
+                                                </table>
+                                            </th>
+                                            <th>@Html.Raw("TOTAL")</th>
+                                            <th>@Html.Raw("AVERAGE")</th>
+                                            <th>@Html.Raw("REMARK")</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0;i < semesterISummaries.Count;i++)
+                                        {
+                                            var semesterSummary = semesterISummaries[i];
+                                            var semesterIISummary = semesterIISummaries[i];
+                                            var semesterSummaryDetails = _context.SMSummaryDetails.Where(a => a.SMSummaryId == semesterSummary.Id).ToList();
+                                            var semesterIISummaryDetails = _context.SMSummaryDetails.Where(a => a.SMSummaryId == semesterIISummary.Id).ToList();
+
+                                            <tr>
+                                                <td>@Html.Raw(++counter)</td>
+                                                <td><input type="checkbox" name="chk_@counter" id="chk_@counter" /></td>
+                                                <td>
+                                                    @Html.Raw(semesterISummaries[i].IDNo)
+                                                    <input type="hidden" name="StudentPromotionId_@counter" value="@semesterISummaries[i].StudentPromotionId" />
+                                                </td>
+                                                <td>@Html.Raw(semesterISummaries[i].FullName)</td>
+                                                <td>@Html.Raw(semesterISummaries[i].Gender)</td>
+                                                <td>@Html.Raw(semesterISummaries[i].SectionName)</td>
+                                                <td>
+                                                    <table style="width:100%;">
+                                                        <tr>
+                                                            @for (int j = 0; j < semesterSummaryDetails.Count; j++)
+                                                            {
+                                                                <th>@Html.Raw(semesterSummaryDetails[j].SubjectTotal)</th>
+                                                            }
+                                                            @for (int j = 0; j < semesterIISummaryDetails.Count; j++)
+                                                            {
+                                                                <th>@Html.Raw(semesterIISummaryDetails[j].SubjectTotal)</th>
+                                                            }
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td>@Html.Raw("<span style='font-weight:bold;font-size:20px;'><i><u>"+(semesterISummaries[i].TotalMark + semesterIISummaries[i].TotalMark)+"</u></i></span>")</td>
+                                                <td>@Html.Raw("<span style='font-weight:bold;font-size:20px;'><i><u>"+((semesterISummaries[i].TotalMark + semesterIISummaries[i].TotalMark)/2)+"</u></i></span>")</td>
+                                                <td>@Html.Raw("<span style='font-weight:bold;font-size:20px;'><i><u>"+semesterISummaries[i].Average+"</u></i></span>")</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>#</th>
+                                            <th><input type="checkbox" name="chkAll" id="chkAll" /></th>
+                                            <th>
+                                                @Html.Raw("ID No")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Full Name")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Gender")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Section")
+                                            </th>
+                                            <th>
+                                                <table style="width:100%">
+                                                    <tr>
+                                                        <th style="text-align:center;" colspan="@smSummaryDetails.Count">SEMESTER I</th>
+                                                        <th style="text-align:center;" colspan="@smSummaryIIDetails.Count">SEMESTER II</th>
+                                                    </tr>
+                                                    <tr>
+                                                        @{
+                                                            @for (int j = 0; j < smSummaryDetails.Count; j++)
+                                                            {
+                                                                var subjectD = _context.SubjectGroupDetails.Find(smSummaryDetails[j].SubjectGroupDetailId);
+                                                                var subject = _context.Subjects.Find(subjectD.SubjectId);
+                                                                <th>@Html.Raw(subject.Code)</th>
+                                                            }
+                                                            @for (int j = 0; j < smSummaryIIDetails.Count; j++)
+                                                            {
+                                                                var subjectD = _context.SubjectGroupDetails.Find(smSummaryDetails[j].SubjectGroupDetailId);
+                                                                var subject = _context.Subjects.Find(subjectD.SubjectId);
+                                                                <th>@Html.Raw(subject.Code)</th>
+                                                            }
+                                                        }
+                                                    </tr>
+                                                </table>
+                                            </th>
+                                            <th>@Html.Raw("TOTAL")</th>
+                                            <th>@Html.Raw("AVERAGE")</th>
+                                            <th>@Html.Raw("REMARK")</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+</div>

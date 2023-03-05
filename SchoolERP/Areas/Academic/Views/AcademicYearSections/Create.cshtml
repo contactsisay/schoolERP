@@ -1,0 +1,114 @@
+﻿@model BALibrary.Academic.AcademicYearSection
+@inject SchoolERP.Data.ApplicationDbContext _context;
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Areas/Academic/Views/Shared/_Layout.cshtml";
+
+    var sections = ViewBag.Sections;
+    int counter = 0;
+    int aYID = (int)ViewBag.AcademicYearId;
+    var academicYearSections = _context.AcademicYearSections.Where(a => a.AcademicYearId == aYID).ToList();
+}
+
+<h1>Create</h1>
+
+<h4>Academic Year Section</h4>
+<hr />
+
+<form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <legend>ACADEMIC YEAR SECTIONS</legend>
+            <input type="hidden" id="rowCount" value="@Html.Raw(sections.Count)" />
+            <input type="hidden" id="AcademicYearId" name="AcademicYearId" value="@ViewBag.AcademicYearId" />
+
+            <table id="employee-table" style="width:100%;">
+                <tr>
+                    <th style="width:10%"><label>&nbsp;</label><input type="checkbox" name="chkAll" id="chkAll" onchange="checkUncheckAll()" /></th>
+                    <th style="width:30%">Section</th>
+                    <th style="width:15%">Class Room</th>
+                    <th style="width:30%">No Of Student</th>
+                    <th style="width:15%">Repr. Student</th>                    
+                </tr>
+
+                @foreach (var s in sections)
+                {
+                    bool found = false;
+                    int academicYearSectionId = 0;
+                    foreach (var ays in academicYearSections)
+                    {
+                        if (s.Id == ays.SectionId)
+                        {
+                            academicYearSectionId = ays.Id;
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (found)
+                    {
+                        <tr>
+                            <td><input type="checkbox" name="chk_@counter" id="chk_@counter" checked="checked" /></td>
+                            <td>
+                                <input type="hidden" name="SectionId_@counter" value="@s.Id" />
+                                <input type="hidden" name="AcademicYearSectionId_@counter" value="@academicYearSectionId" />
+                                <input type="text" readonly="readonly" value="@s.Id" class="form-control" />
+                            </td>
+                            <td><select name="RoomId_@counter" asp-items="ViewBag.RoomId" class="form-control"><option value="-1">Select</option></select></td>
+                            <td><input type="text" name="NoOfStudent_@counter" value="25" class="form-control" /></td>
+                            <td><select name="StudentId_@counter" asp-items="ViewBag.Students" class="form-control"><option value="-1">Select</option></select></td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td><input type="checkbox" name="chk_@counter" id="chk_@counter" /></td>
+                            <td>
+                                <input type="hidden" name="SectionId_@counter" value="@s.Id" />
+                                <input type="text" readonly="readonly" value="@s.Id" class="form-control" />
+                            </td>
+                            <td><select name="RoomId_@counter" asp-items="ViewBag.RoomId" class="form-control"><option value="-1">Select</option></select></td>
+                            <td><input type="text" name="NoOfStudent_@counter" value="25" class="form-control" /></td>
+                            <td><select name="StudentId_@counter" asp-items="ViewBag.Students" class="form-control"><option value="-1">Select</option></select></td>
+                        </tr>
+                    }
+
+                    counter++;
+                }
+
+            </table>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">&nbsp;</div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <input type="submit" value="Save Sections" id="btn_submit" class="btn btn-lg btn-flat btn-outline-danger" />
+            <a asp-action="Index" class="btn btn-lg btn-flat btn-outline-dark">Back to List</a>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+    function checkUncheckAll() {
+        var chkAll = document.getElementById("chkAll").checked;
+        var rowCount = document.getElementById("rowCount").value;
+
+        if (chkAll) {
+            for (var i = 0; i < rowCount; i++) {
+                $("#chk_" + i).prop("checked", true);
+            }
+        }
+        else {
+            for (var i = 0; i < rowCount; i++) {
+                $("#chk_" + i).prop("checked", false);
+            }
+        }
+    }
+</script>

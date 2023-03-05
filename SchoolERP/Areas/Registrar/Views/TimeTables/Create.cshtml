@@ -1,0 +1,174 @@
+﻿@model BALibrary.Registrar.TimeTable
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Areas/Registrar/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Time Table</h4>
+<hr />
+
+<form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-3">
+                    <input type="hidden" name="AcademicYearSectionId" value="0" />
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <label class="control-label">Year</label>
+                            <select name="YearId" class="form-control" asp-items="@ViewBag.Years"></select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">&nbsp;</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <label class="control-label">Session</label>
+                            <select name="SessionId" class="form-control" asp-items="@ViewBag.Sessions"></select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">&nbsp;</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <label class="control-label">Class</label>
+                            <select name="ClassId" class="form-control" asp-items="@ViewBag.Classes"></select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">&nbsp;</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <label class="control-label">Section</label>
+                            <select name="SectionId" class="form-control" asp-items="@ViewBag.Sections"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-9">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <legend>TIMETABLE DETAILS</legend>
+                            <input type="hidden" id="periods" value="@ViewBag.Periods" />
+                            <input type="hidden" id="subjects" value="@ViewBag.Subjects" />
+                            <input type="hidden" id="weekdays" value="@ViewBag.Weekdays" />
+                            <input type="hidden" id="teachers" value="@ViewBag.Teachers" />
+                            <input type="hidden" id="rowCount" value="0" />
+
+                            <table id="employee-table" style="width:100%;">
+                                <tr>
+                                    <th style="width:20%">Period</th>
+                                    <th style="width:20%">Subject</th>
+                                    <th style="width:20%">Weekday</th>
+                                    <th style="width:30%">Teacher</th>
+                                    <th style="width:10%">Action</th>
+                                </tr>
+                            </table>
+                            <br />
+                            <table style="width:100%;">
+                                <tr>
+                                    <td colspan="5">
+                                        <a href="#" class="btn btn-sm btn-dark" onclick="addNewRow()">Add New Timetable<span class="fas fa-add"></span></a><br />
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">&nbsp;</div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <a asp-action="Index" class="btn btn-lg btn-outline-primary">Back to List</a>
+            <input type="submit" value="Create Time Table" id="btn_submit" class="btn btn-lg btn-outline btn-dark" />
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+
+    function addNewRow() {
+        var table = document.getElementById("employee-table");
+        var rowCount = table.rows.length;
+        var row = table.insertRow(rowCount);
+
+        var periodLists = document.getElementById("periods").value.split(",");
+        var subjectLists = document.getElementById("subjects").value.split(",");
+        var weekdayLists = document.getElementById("weekdays").value.split(",");
+        var teacherLists = document.getElementById("teachers").value.split(",");
+
+        document.getElementById("rowCount").value = rowCount;
+
+        var periods = "<option value='-1'>Select</option>";
+        for (var i = 0; i < periodLists.length-1; i++) {
+            var optionItemList = periodLists[i].split("#");//0,1
+            periods += "<option value='" + optionItemList[0] + "'>" + optionItemList[1] + "</option>";
+        }
+
+        var subjects = "<option value='-1'>Select</option>";
+        for (var j = 0; j < subjectLists.length-1; j++) {
+            var optionItemList = subjectLists[j].split("#");//0,1
+            subjects += "<option value='" + optionItemList[0] + "'>" + optionItemList[1] + "</option>";
+        }
+
+        var weekdays = "<option value='-1'>Select</option>";
+        for (var k = 0; k < weekdayLists.length - 1; k++) {
+            weekdays += "<option value='" + weekdayLists[k] + "'>" + weekdayLists[k] + "</option>";
+        }
+
+        var teachers = "<option value='-1'>Select</option>";
+        for (var l = 0; l < teacherLists.length - 1; l++) {
+            var optionItemList = teacherLists[l].split("#");//0,1
+            teachers += "<option value='" + optionItemList[0] + "'>" + optionItemList[1] + "</option>";
+        }
+
+        var cell0 = row.insertCell(0);
+        cell0.innerHTML = "<select id='period_id_" + rowCount + "' name='period_id_" + rowCount + "' class='form-control'>" + periods + "</select>";
+
+        var cell1 = row.insertCell(1);
+        cell1.innerHTML = "<select id='subject_id_" + rowCount + "' name='subject_id_" + rowCount + "' class='form-control'>" + subjects + "</select>";
+
+        var cell2 = row.insertCell(2);
+        cell2.innerHTML = "<select id='weekday_id_" + rowCount + "' name='weekday_id_" + rowCount + "' class='form-control'>" + weekdays + "</select>";
+
+        var cell3 = row.insertCell(3);
+        cell3.innerHTML = "<select id='teacher_id_" + rowCount + "' name='teacher_id_" + rowCount + "' class='form-control'>" + teachers + "</select>";
+
+        var cell4 = row.insertCell(4);
+        cell4.innerHTML = "<input type='button' id='btn_" + rowCount + "' value='Delete' class='btn btn-sm btn-danger' onclick='deleteRow(this.id)' />";
+        
+    }
+
+    function deleteRow(id) {
+        var table = document.getElementById('employee-table');
+        var rowCount = table.rows.length;
+        document.getElementById("rowCount").value = rowCount - 1;
+        var ele = document.getElementById(id);
+
+        if (rowCount <= 1) {
+            alert("There is no row available to delete!");
+            return;
+        }
+
+        if (ele) {
+            ele.parentNode.parentNode.remove();
+        } else {
+            table.deleteRow(rowCount - 1);
+        }
+
+    }
+
+</script>

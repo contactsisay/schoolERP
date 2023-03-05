@@ -1,0 +1,44 @@
+﻿@model BALibrary.Academic.AcademicYearSection
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Academic/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>AcademicYearSection</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="AcademicYearId" class="control-label"></label>
+                <input asp-for="AcademicYearId" class="form-control" />
+                <span asp-validation-for="AcademicYearId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SectionId" class="control-label"></label>
+                <select asp-for="SectionId" class="form-control" asp-items="ViewBag.SectionId"></select>
+                <span asp-validation-for="SectionId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NoOfStudent" class="control-label"></label>
+                <input asp-for="NoOfStudent" class="form-control" />
+                <span asp-validation-for="NoOfStudent" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StudentId" class="control-label"></label>
+                <input asp-for="StudentId" class="form-control" />
+                <span asp-validation-for="StudentId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+

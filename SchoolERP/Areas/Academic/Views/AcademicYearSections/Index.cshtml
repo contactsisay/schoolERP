@@ -1,0 +1,112 @@
+﻿@model IEnumerable<BALibrary.Academic.AcademicYearSection>
+@inject SchoolERP.Data.ApplicationDbContext _context;
+@{
+    ViewData["Title"] = "Academic Year Sections";
+    Layout = "~/Areas/Academic/Views/Shared/_Layout.cshtml";
+
+    var academicYear = ViewBag.AcademicYear;
+    int counter = 0;
+}
+
+<h4>@ViewData["Title"]</h4>
+
+<p>
+    <a asp-action="Create" class="btn btn-sm btn-flat btn-outline-danger" asp-route-id="@academicYear.Id">Create New Academic Year Section</a>
+    <a asp-controller="AcademicYears" asp-action="Index" class="btn btn-sm btn-flat btn-outline-dark">Back to Academic Years</a>
+
+@if (academicYear != null)
+{
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="callout callout-danger" style="border:2px solid darkred;">
+                <h5><b>ACADEMIC YEAR DETAILS</b></h5>
+                <table width="100%" class="table table-responsive">
+                    <tr>
+                        <th>
+                            <label>SESSION: </label> <br /><b><span style="font-size:20px;color:#17a2b8;">@Html.Raw(_context.Sessions.Find(academicYear.SessionId).Year)</span></b>
+                        </th>
+                        <th>
+                            <label>CLASS: </label> <br/><b><span style="font-size:20px;color:#17a2b8;">@Html.Raw(_context.Classes.Find(academicYear.ClassId).Name.ToUpper())</span></b>
+                        </th>
+                        <th>
+                            <label>SUBJECT GROUP: </label> <br/><b><span style="font-size:20px;color:#17a2b8;">@Html.Raw(_context.SubjectGroups.Find(academicYear.SubjectGroupId).Name.ToUpper())</span></b>
+                        </th>
+                        <th>
+                            <label>EXAM GROUP: </label> <br/><b><span style="font-size:20px;color:#17a2b8;">@Html.Raw(_context.ExamGroups.Find(academicYear.ExamGroupId).Name.ToUpper())</span></b>
+                        </th>
+                    </tr>
+                    
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+<table id="datatable" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Section ID</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Section.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NoOfStudent)
+            </th>
+            <th>
+                @Html.Raw("Section Representative")
+            </th>
+            <th>
+                @Html.Raw("NEXT_ACTION")
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            counter = counter + 1;
+            var student = _context.Students.Find(item.StudentId);
+
+            <tr>
+                <td>
+                    @Html.Raw(counter)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Section.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NoOfStudent)
+                </td>
+                <td>
+                    @Html.Raw(student != null ? student.FirstName + " " +student.MiddleName + " "+ student.LastName : "<span class'badge badge-danger'>N/A</span>")
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-list"></i></a> |
+                    <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-edit"></i></a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa fa-trash"></i></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>#</th>
+            <th>Section ID</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Section.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NoOfStudent)
+            </th>
+            <th>
+                @Html.Raw("Section Representative")
+            </th>
+            <th>
+                @Html.Raw("NEXT_ACTION")
+            </th>
+        </tr>
+    </tfoot>
+</table>

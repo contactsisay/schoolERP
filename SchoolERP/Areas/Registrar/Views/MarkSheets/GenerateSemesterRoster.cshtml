@@ -1,0 +1,172 @@
+﻿@inject SchoolERP.Data.ApplicationDbContext _context;
+@{
+    ViewData["Title"] = "Generate Semester Roster";
+    Layout = "~/Areas/Registrar/Views/Shared/_Layout.cshtml";
+
+    int counter = 0;
+    var queryResult = ViewBag.queryResult;
+    var subjects = ViewBag.subjects;
+}
+
+<h1>@ViewBag.Title</h1>
+<h4>Filter @ViewBag.Title</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <!-- SEARCH FORM -->
+        <form asp-action="GenerateSemesterRoster">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-lg-2">
+                    <label class="control-label">ROSTER NAME</label>
+                    <select name="AcademicYearId" id="ClassId2" class="form-control" asp-items="ViewBag.academicYears"><option value="-1">Select</option></select>
+                </div>
+                <div class="col-lg-2">
+                    <label class="control-label">SECTION</label>
+                    <select name="AcademicYearSectionId" id="SectionId" class="form-control"></select>
+                </div>
+                <div class="col-lg-2" style="text-align:center;">
+                    <label class="control-label">OVERWRITE OLD RECORD</label><br />
+                    <input type="checkbox" name="Overwrite" class="form-control" />
+                </div>
+                <div class="col-lg-2">
+                    <label>&nbsp;</label><br />
+                    <input type="submit" value="VIEW SEMESTER ROSTER" class="btn btn-lg btn-flat btn-outline-danger" />
+                </div>
+            </div>
+        </form>
+
+        <div class="row">
+            <div class="col-lg-12">&nbsp;</div>
+        </div>
+
+        @if (queryResult != null)
+        {
+            <div class="row">
+                <div class="col-lg-12">
+                    <form asp-action="GenerateSemesterGradeReport" target="_blank">
+                        <input type="hidden" value="@ViewBag.academicYearId" name="AcademicYearIdd" />
+                        <input type="hidden" value="@ViewBag.academicYearSectionId" name="AcademicYearSectionIdd" />
+                        <input type="submit" value="Generate Semester Grade Report" class="btn btn-flat btn-md btn-outline-danger" />
+
+                        <div class="row">
+                            <div class="col-lg-12">&nbsp;</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <table id="datatable2" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th><input type="checkbox" name="chkAll" id="chkAll" /></th>
+                                            <th>
+                                                @Html.Raw("ID No")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Full Name")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Gender")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Section")
+                                            </th>
+                                            <th>
+                                                <table style="width:100%">
+                                                    <tr>
+                                                        @foreach (var s in subjects)
+                                                        {
+                                                            <th style="width:20%;">@Html.Raw(s.SubjectCode)</th>
+                                                        }
+                                                    </tr>
+                                                </table>
+                                            </th>
+                                            <th>TOTAL</th>
+                                            <th>
+                                                @Html.Raw("RANK (FROM SECTION)")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("RANK (FROM GRADE)")
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var i in queryResult)
+                                        {
+                                            int iD = Convert.ToInt32(i.Id);
+                                            var sMSummaryDetails = _context.SMSummaryDetails.Where(a => a.SMSummaryId == iD).ToList();
+
+                                            <tr>
+                                                <td>@Html.Raw(++counter)</td>
+                                                <td><input type="checkbox" name="chk_@counter" id="chk_@counter" /></td>
+                                                <td>
+                                                    @Html.Raw(i.IDNo)
+                                                    <input type="hidden" name="StudentPromotionId_@counter" value="@i.StudentPromotionId" />
+                                                </td>
+                                                <td>@Html.Raw(i.FullName)</td>
+                                                <td>@Html.Raw(i.Gender)</td>
+                                                <td>@Html.Raw(i.SectionName)</td>
+                                                <td>
+                                                    <table style="width:100%;">
+                                                        <tr>
+                                                            @foreach (var subjectMark in sMSummaryDetails)
+                                                            {
+                                                                <th style="width:20%;text-align:center;">
+                                                                    @Html.Raw(subjectMark.SubjectTotal)
+                                                                </th>
+                                                            }
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td>@Html.Raw("<span style='font-weight:bold;font-size:20px;'><i><u>"+i.TotalMark+"</u></i></span>")</td>
+                                                <td>@Html.Raw("<span style='font-weight:bold;font-size:20px;'><i><u>"+i.RankFromSection+"</u></i></span>")</td>
+                                                <td>@Html.Raw("<span style='font-weight:bold;font-size:20px;'><i><u>"+i.RankFromGrade+"</u></i></span>")</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>#</th>
+                                            <th><input type="checkbox" name="chkAll" id="chkAll" /></th>
+                                            <th>
+                                                @Html.Raw("ID No")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Full Name")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Gender")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("Section")
+                                            </th>
+                                            <th>
+                                                <table style="width:100%">
+                                                    <tr>
+                                                        @foreach (var s in subjects)
+                                                        {
+                                                            <th style="width:20%;">@Html.Raw(s.SubjectCode)</th>
+                                                        }
+                                                    </tr>
+                                                </table>
+                                            </th>
+                                            <th>TOTAL</th>
+                                            <th>
+                                                @Html.Raw("RANK (FROM SECTION)")
+                                            </th>
+                                            <th>
+                                                @Html.Raw("RANK (FROM GRADE)")
+                                            </th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+</div>

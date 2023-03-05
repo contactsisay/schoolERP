@@ -1,0 +1,104 @@
+﻿@model IEnumerable<BALibrary.Inventory.Stock>
+@inject SchoolERP.Data.ApplicationDbContext _context;
+@{
+    ViewData["Title"] = "Stocks";
+    Layout = "~/Areas/Inventory/Views/Shared/_Layout.cshtml";
+    var counter = 0;
+}
+
+<h1>@ViewBag.Title</h1>
+
+@*<p>
+    <a asp-action="Create" class="btn btn-outline-dark">Create New</a>
+</p>*@
+@*<p>
+    <a asp-action="ImportFromExcel" class="btn btn-outline-dark">Import From Excel</a>
+</p>*@
+<table id="datatable" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Product Name</th>
+            <th>Batch No</th>
+            <th>Initial Quantity</th>
+            <th>Sold Quantity</th>
+            <th>Available Quantity</th>
+            <th>Last Action Taken</th>
+            <th>Updated At</th>
+            <th>Registered By</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var product = _context.Products.Find(item.ProductBatch.ProductId);
+            #region Status update
+            var status = "";
+            if (item.Status == 0)
+            {
+                status = "STOCK CREATED";
+            }
+            else if (item.Status == 1)
+            {
+                status = "ITEM SOLD";
+            }
+            else if (item.Status == 2)
+            {
+                status = "INVOICE REVERSED";
+            }
+            else if (item.Status == 3)
+            {
+                status = "INVOICE VOID";
+            }
+            #endregion
+
+            <tr>
+                <td>@Html.Raw(++counter)</td>
+                <td>
+                    @Html.Raw((product != null ? product.Name : string.Empty))
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductBatch.BatchNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.InitialQuantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SoldQuantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CurrentQuantity)
+                </td>
+                <td>
+                    @Html.Raw(status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UpdatedAt)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UpdatedAt)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>#</th>
+            <th>Product Name</th>
+            <th>Batch No</th>
+            <th>Initial Quantity</th>
+            <th>Sold Quantity</th>
+            <th>Available Quantity</th>
+            <th>Last Action Taken</th>
+            <th>Updated At</th>
+            <th>Registered By</th>
+            <th>Actions</th>
+        </tr>
+    </tfoot>
+</table>

@@ -1,0 +1,72 @@
+﻿@using BALibrary.Sales;
+@model IEnumerable<BALibrary.Sales.Invoice>
+@inject SchoolERP.Data.ApplicationDbContext _context;
+@{
+    ViewData["Title"] = "Invoices";
+    Layout = "~/Areas/Sales/Views/Shared/_Layout.cshtml";
+    var counter = 0;
+}
+
+<h1>@ViewBag.Title</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-outline-dark">Create New</a>
+</p>
+<table id="datatable" class="table table-bordered table-hover table-outline-dark">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Invoice No</th>
+            <th>Invoice Type</th>
+            <th>Invoice Date</th>
+            <th>Customer</th>
+            <th>Items Count</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.Raw(++counter)</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.InvoiceNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.InvoiceType.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.InvoiceDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Customer.Name)
+                </td>
+                <td>
+                    <a asp-controller="InvoiceDetails" asp-action="Index" class="btn btn-sm btn-outline-primary">@Html.Raw("<b>"+(_context.InvoiceDetails.Where(idd => idd.InvoiceId == item.Id).ToList()).Count+"</b> Items")</a>
+                </td>
+                <td>
+                    @if (item.Status != 0)
+                    {
+                        <a class="btn btn-sm btn-outline-danger" asp-action="VoidInvoice" asp-route-id="@item.Id">Void Invoice</a>
+                        @Html.Raw("&nbsp;|&nbsp;")
+                    }
+                    <a asp-action="GenerateInvoice" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">View Invoice</a> |
+                    @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |*@
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>#</th>
+            <th>Invoice No</th>
+            <th>Invoice Type</th>
+            <th>Invoice Date</th>
+            <th>Customer</th>
+            <th>Items Count</th>
+            <th>Actions</th>
+        </tr>
+    </tfoot>
+</table>

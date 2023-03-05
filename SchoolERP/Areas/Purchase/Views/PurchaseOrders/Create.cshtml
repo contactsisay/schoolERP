@@ -1,0 +1,291 @@
+﻿@model BALibrary.Purchase.Models.PurchaseOrderViewModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Areas/Purchase/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Purchase Order</h4>
+
+<hr />
+
+<form asp-action="CreatePR">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-3">
+                    <label class="control-label">Invoice No (From Supplier)</label>
+                    <input name="invoice_no" class="form-control" />
+                </div>
+                <div class="col-lg-9">
+                    <div class="callout callout-info">
+                        <h5><i class="fas fa-info"></i> Note:</h5>
+                        This will create purchase request, show invoice summary, stock and product batch
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    <div class="row">
+        <div class="col-lg-12">
+            <hr/>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-12">
+            <legend>PURCHASE DETAILS</legend>
+            <input type="hidden" id="pOptions" value="@ViewBag.pOptions" />
+            <input type="hidden" id="sOptions" value="@ViewBag.sOptions" />
+            <input type="hidden" id="rowCount" value="0" />
+            <input type="hidden" id="selectedItem" />
+
+            <table id="employee-table" style="width:100%;">
+                <tr>
+                    <th style="width:10%">Item Name</th>
+                    <th style="width:5%">Batch No</th>
+                    <th style="width:10%">Manufactured Date </th>
+                    <th style="width:5%">Best Before</th>
+                    <th style="width:5%">Exp. Date</th>
+                    <th style="width:10%">Purchasing Price</th>
+                    <th style="width:10%">Selling Price</th>
+                    <th style="width:10%">Quantity><span id="errorMessage" style="color:red;display:none;"></span></th>
+                     <th style="width:10%">Supplier</th>
+                    <th style="width:5%">Is Taxable?</th>
+                    <th style="width:5%">Is Sellable?</th>
+                    <th style="width:5%">Row Total</th>
+                    <th style="width:5%">Action</th>
+                </tr>
+            </table>
+            <br />
+
+            <table style="width:100%;">
+                <tr>
+                    <td colspan="12">
+                        <a href="#" class="btn btn-sm btn-dark" onclick="addNewRow()">Add New Item<span class="fas fa-add"></span></a><br />
+                    </td>
+                </tr>
+                <tr>
+                    <th colspan="10" style="width:80%;text-align:right;font-weight:bold;">Subtotal:</th>
+                    <th style="width:15%;">
+                        <input type="text" id="subtotal" readonly="readonly" value="0" class="form-control" />
+                    </th>
+                    <th style="width:5%;">&nbsp;</th>
+                </tr>
+                <tr>
+                    <th colspan="10" style="width80%;text-align:right;font-weight:bold;">TAX (15%):</th>
+                    <th style="width:15%;">
+                        <input type="text" id="overallTax" readonly="readonly" value="0" class="form-control" />
+                    </th>
+                    <th style="width:5%;">&nbsp;</th>
+                </tr>
+                <tr>
+                    <th colspan="10" style="width:80%;text-align:right;font-weight:bold;">Grand Total:</th>
+                    <th style="width:15%;">
+                        <input type="text" id="grandTotal" readonly="readonly" value="0" class="form-control" />
+                    </th>
+                    <th style="width:5%;">&nbsp;</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-12">&nbsp;</div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-12">
+            <a asp-action="Index" class="btn btn-lg btn-outline-primary">Back to List</a>
+            <input type="submit" value="Create Purchase" id="btn_submit" class="btn btn-lg btn-outline btn-dark" />
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+
+    function onItemSelect(rowId) {
+        var item = document.getElementById(rowId);
+        var itemId = item.value;
+        var rowCount = item.id.split('_')[1];
+        var unitPrice = 0;
+        var rowTotal = 0;
+        var pOptions = document.getElementById("pOptions").value.split(",");
+        for (var i = 0; i < pOptions.length; i++) {
+            var pOptionItems = pOptions[i].split("#");
+            if (parseInt(pbOptionItems[0]) == parseInt(itemId)) {
+                //document.getElementById("selectedItem").value = pOptions[i];
+                //document.getElementById("minimum_order_level_" + rowCount).value = parseFloat(pOptionItems[3]);
+                //document.getElementById("minimum_order_level_" + rowCount).value = parseFloat(pOptionItems[3]);
+                break;
+            }
+        }
+    }
+
+    function onQuantityChange(rowId) {
+
+        var grandTotal = 0;
+        var rowCount = rowId.split('_')[1];
+
+        var unitprice = parseFloat(document.getElementById("purchasing_price_" + rowCount).value);
+        var quantity = document.getElementById("quantity_" + rowCount).value;
+        var isTaxable = document.getElementById("istaxable_" + rowCount).value;
+
+        if (quantity == "") {
+            quantity = 1;
+            document.getElementById("quantity_" + rowCount).value = parseFloat(1);
+        }
+
+        if (parseFloat(quantity) <= 0) {
+            document.getElementById("quantity_" + rowCount).style.backgroundColor = "pink";
+            document.getElementById("btn_submit").style.display = "none";
+            document.getElementById("errorMessage").innerText = " Quantity must be greater than 0";
+            document.getElementById("errorMessage").style.display = "inline";
+        } else {
+            rowTotal = parseFloat(unitprice) * parseFloat(quantity);
+            document.getElementById("totalprice_" + rowCount).value = rowTotal;
+            document.getElementById("quantity_" + rowCount).style.backgroundColor = "white";
+            document.getElementById("btn_submit").style.display = "inline";
+            document.getElementById("errorMessage").style.display = "none";
+        }
+
+        //re-calculate grand total
+        calculateGrandTotal();
+    }
+
+    function addNewRow() {
+        var table = document.getElementById("employee-table");
+        var rowCount = table.rows.length;
+        var row = table.insertRow(rowCount);
+
+        var pOptions = document.getElementById("pOptions").value.split(",");
+        var sOptions = document.getElementById("sOptions").value.split(",");
+        document.getElementById("rowCount").value = rowCount;
+
+        var optionsList = "<option value='-1'>Select</option>";
+        for (var i = 0; i < pOptions.length - 1; i++) {
+            var optionItemList = pOptions[i].split("#");//0,1,2,3
+            if (!alreadyAdded(optionItemList[0], rowCount)) {
+                optionsList += "<option value='" + optionItemList[0] + "'>" + optionItemList[1] + "</option>";
+            }
+        }
+
+        var optionsList2 = "<option value='-1'>Select</option>";
+        for (var j = 0; j < sOptions.length - 1; j++) {
+            var optItem = sOptions[j].split("#");//0,1,2,3
+            optionsList2 += "<option value='" + optItem[0] + "'>" + optItem[1] + "</option>";
+        }
+
+        var cell0 = row.insertCell(0);
+        cell0.innerHTML = "<select id='productid_" + rowCount + "' name='productid_" + rowCount + "' class='form-control' onchange='onItemSelect(this.id)'>" + optionsList + "</select>";
+
+        var cell1 = row.insertCell(1);
+        cell1.innerHTML = "<input type='text' name='batch_no_" + rowCount + "' id='batch_no_" + rowCount + "' class='form-control' />";
+
+        var cell2 = row.insertCell(2);
+        cell2.innerHTML = "<input type='date' name='manufactured_date_" + rowCount + "' id='manufactured_date_" + rowCount + "' class='form-control' />";
+
+        var cell3 = row.insertCell(3);
+        cell3.innerHTML = "<input type='date' name='best_before_" + rowCount + "' id='best_before_" + rowCount + "' class='form-control' />";
+        
+        var cell4 = row.insertCell(4);
+        cell4.innerHTML = "<input type='date' name='expiry_date_" + rowCount + "' id='expiry_date_" + rowCount + "' class='form-control' />";
+
+        var cell5 = row.insertCell(5);
+        cell5.innerHTML = "<input type='text' name='purchasing_price_" + rowCount + "' id='purchasing_price_" + rowCount + "' class='form-control' value='1' />";
+
+        var cell6 = row.insertCell(6);
+        cell6.innerHTML = "<input type='text' name='selling_price_" + rowCount + "' id='selling_price_" + rowCount + "' class='form-control' value='1' />";
+
+        var cell7 = row.insertCell(7);
+        cell7.innerHTML = "<input type='text' name='quantity_" + rowCount + "' id='quantity_" + rowCount + "' value='1' class='form-control' onkeyup='onQuantityChange(this.id)' />";
+
+        var cell8 = row.insertCell(8);
+        cell8.innerHTML = "<select id='supplierid_" + rowCount + "' name='supplierid_" + rowCount + "' class='form-control'>" + optionsList2 + "</select>";
+
+        var cell9 = row.insertCell(9);
+        cell9.innerHTML = "<input type='checkbox' name='istaxable_" + rowCount + "' id='istaxable_" + rowCount + "' class='form-control' />";
+
+        var cell10 = row.insertCell(10);
+        cell10.innerHTML = "<input type='checkbox' name='is_sellable_" + rowCount + "' id='is_sellable_" + rowCount + "' checked='checked' class='form-control' />";
+
+        var cell11 = row.insertCell(11);
+        cell11.innerHTML = "<input type='text' name='totalprice_" + rowCount + "' id='totalprice_" + rowCount + "' class='form-control' value='1' readonly='readonly' />";
+
+        var cell12 = row.insertCell(12);
+        cell12.innerHTML = "<input type='button' id='btn_" + rowCount + "' value='Delete' class='btn btn-sm btn-danger' onclick='deleteRow(this.id)' />";
+    }
+
+    function deleteRow(id) {
+        var table = document.getElementById('employee-table');
+        var rowCount = table.rows.length;
+        document.getElementById("rowCount").value = rowCount - 1;
+        var ele = document.getElementById(id);
+
+        //re-calculate grand total
+        calculateGrandTotal();
+
+        if (rowCount <= 1) {
+            alert("There is no row available to delete!");
+            return;
+        }
+
+        if (ele) {
+            ele.parentNode.parentNode.remove();
+        } else {
+            table.deleteRow(rowCount - 1);
+        }
+
+    }
+
+    function calculateGrandTotal() {
+        var rowCount = parseInt(document.getElementById("rowCount").value);
+        var grandTotal = 0;
+        var applyTax = false;
+        for (var i = 1; i <= rowCount; i++) {
+            var istaxable = 0;
+            var is_taxable_field = document.getElementById("istaxable_" + i);
+            if (is_taxable_field != null && is_taxable_field.value != "") {
+                istaxable = parseInt(is_taxable_field.value);
+                if (istaxable == 1) {
+                    applyTax = true;
+                }
+            }
+
+            var total_price = document.getElementById("totalprice_" + i);
+            if (total_price != null && total_price.value != "") {
+                grandTotal += parseFloat(total_price.value);
+            }
+        }
+
+        //before tax applied
+        document.getElementById("subtotal").value = grandTotal.toFixed(2);
+        var overallTax = 0;
+        if (applyTax) {
+            overallTax = (grandTotal * parseFloat(0.15)).toFixed(2);
+            document.getElementById("overallTax").value = overallTax;
+        }
+
+        document.getElementById("grandTotal").value = (parseFloat(grandTotal) + parseFloat(overallTax));
+    }
+
+    function alreadyAdded(itemId, rowCount) {
+        var p = false;
+        if (rowCount > 1) {
+            for (var i = rowCount; i > 1; i--) {
+                var pId = document.getElementById("productid_" + (i - 1)).value;
+                if (parseInt(pId) == parseInt(itemId)) {
+                    p = true;
+                    break;
+                }
+            }
+        }
+
+        return p;
+    }
+
+</script>

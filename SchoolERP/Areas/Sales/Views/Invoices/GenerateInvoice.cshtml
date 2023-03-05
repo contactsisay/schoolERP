@@ -1,0 +1,156 @@
+﻿@using BALibrary.Inventory;
+@using BALibrary.Sales;
+@inject SchoolERP.Data.ApplicationDbContext _context;
+@{
+    ViewData["Title"] = "Generate Invoice";
+    Layout = "~/Areas/Sales/Views/Shared/_Layout.cshtml";
+
+    Invoice invoice = (Invoice)ViewBag.Invoice;
+    List<InvoiceDetail> invoiceDetails = (List<InvoiceDetail>)ViewBag.InvoiceDetails;
+    Customer? customer = _context.Customers.Find(invoice.CustomerId);
+    int counter = 0;
+    decimal grandTotal = 0;
+}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="callout callout-info">
+                    <h5><i class="fas fa-info"></i> Note:</h5>
+                    This page has been enhanced for printing. Click the print button at the bottom of the invoice to test.
+                </div>
+
+                <!-- Main content -->
+                <div class="invoice p-3 mb-3">
+                    <!-- title row -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h4>
+                                <i class="fas fa-globe"></i> MyPharmacy
+                                <small class="float-right">Date: <b>@Html.Raw(DateTime.Now.ToShortDateString())</b></small>
+                            </h4>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- info row -->
+                    <div class="row invoice-info">
+                        <div class="col-sm-4 invoice-col">
+                            From
+                            <address>
+                                <strong>MyPharmacy</strong><br/>
+                                Ziway, Batu<br/>
+                                Phone: (046) 441-4040<br>
+                                Email: info@mypharmacy.com
+                            </address>
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-sm-4 invoice-col">
+                            To
+                            <address>
+                                <strong>@Html.Raw(customer.Name)</strong><br>
+                                TIN: @Html.Raw(customer.TINNo)<br/>
+                                Type: @Html.Raw(_context.CustomerTypes.Find(customer.CustomerTypeId).Name)<br/>
+                                Phone: (046) 441-4040
+                            </address>
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-sm-4 invoice-col">
+                            <b>Invoice @Html.Raw("#"+invoice.InvoiceNo)</b><br>
+                            <b>Payment Due:</b> @Html.Raw(DateTime.Now.ToShortDateString())<br>
+                            <b>Account:</b> 
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                    <!-- Table row -->
+                    <div class="row">
+                        <div class="col-12 table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Product</th>
+                                        <th>Quantity</th>
+                                        <th>Unit Price (ETB)</th>
+                                        <th>Subtotal (ETB)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach(InvoiceDetail idd in invoiceDetails)
+                                    {
+                                        grandTotal += idd.RowTotal;
+                                        <tr>
+                                            <td>@Html.Raw(++counter)</td>
+                                            <td>@Html.Raw(_context.Products.Find(_context.ProductBatches.Find(idd.ProductBatchId).ProductId).Name)</td>
+                                            <td>@Html.Raw(idd.Quantity)</td>
+                                            <td>@Html.Raw(idd.SellingPrice)</td>
+                                            <td>@Html.Raw(idd.RowTotal)</td>
+                                        </tr>
+                                    }
+                                   
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+
+                    <div class="row">
+                        <!-- accepted payments column -->
+                        <div class="col-6">
+                            <p class="lead">Payment Methods:</p>
+                            <label>CASH</label>
+                            <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;">&nbsp;</p>
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-6">
+                            <p class="lead">Amount Due @Html.Raw(DateTime.Now.ToShortTimeString())</p>
+
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tr>
+                                        <th style="width:50%">Subtotal:</th>
+                                        <td>@Html.Raw(grandTotal + " ETB")</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Tax (15%)</th>
+                                        <td>0.0</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Grand Total:</th>
+                                        <td>@Html.Raw(grandTotal + " ETB")</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                    <!-- this row will not appear when printing -->
+                    <div class="row no-print">
+                        <div class="col-12">
+                            <a href="#" rel="noopener" target="_blank" onclick="onPrint()" class="btn btn-sm btn-outline-dark"><i class="fas fa-print"></i> Print Invoice</a>
+
+                             <a asp-action="Index" class="btn btn-sm btn-outline-dark float-right" style="margin-right: 5px;">
+                                <i class="fas fa-list"></i> Back to List
+                            </a>
+                           @* <button type="button" class="btn btn-sm btn-outline-dark float-right" style="margin-right: 5px;">
+                                <i class="fas fa-download"></i> Export to PDF
+                            </button>*@
+                        </div>
+                    </div>
+                </div>
+                <!-- /.invoice -->
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+    //window.addEventListener("load", window.print());
+    function onPrint(){
+        window.addEventListener("load", window.print());
+    }
+</script>

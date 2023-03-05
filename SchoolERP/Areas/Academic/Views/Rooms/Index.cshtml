@@ -1,0 +1,71 @@
+﻿@model IEnumerable<BALibrary.Academic.Room>
+
+@{
+    ViewData["Title"] = "Rooms";
+    Layout = "~/Areas/Academic/Views/Shared/_Layout.cshtml";
+    int counter = 0;
+}
+
+<h4>@ViewBag.Title</h4>
+<hr />
+<p>
+    <a asp-action="Create" class="btn btn-flat btn-md btn-outline-danger">Create New</a>
+</p>
+<div class="row">
+    <div class="col-md-12">
+
+        <table id="datatable" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>
+                        @Html.Raw("Room No")
+                    </th>
+                    <th>
+                        @Html.Raw("Capacity")
+                    </th>
+                    <th>
+                        @Html.Raw("Actions")
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    counter = counter + 1;
+
+                    <tr>
+                        <td>
+                            @Html.Raw(counter)
+                        </td>
+                        <td>
+                            @Html.Raw(item.RoomNo)
+                        </td>
+                        <td>
+                            @Html.Raw(item.Capacity)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>#</th>
+                    <th>
+                        @Html.Raw("Room No")
+                    </th>
+                    <th>
+                        @Html.Raw("Capacity")
+                    </th>
+                    <th>
+                        @Html.Raw("Actions")
+                    </th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

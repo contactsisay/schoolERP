@@ -1,0 +1,36 @@
+﻿@using BALibrary.Admin;
+@inject IHttpContextAccessor _httpContextAccessor;
+@{
+    List<RoleModule> userRoleModules = (List<RoleModule>)ViewBag.UserRoleModules;
+}
+
+<div class="text-center">
+    <h1 class="display-4"><span class="badge badge-danger">ACCESS RELATED ISSUE</span></h1>
+</div>
+
+<div class="container-fluid">
+
+    @if (userRoleModules.Count < 0)
+    {
+        <div class="row">
+            <div class="col-lg-12">&nbsp;</div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <p><span class="text-lg bg-gradient-red text-white text-bold">SORRY!</span> <br />You don't have access to any of the modules. Contact Your Administrator!</p>
+            </div>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(_httpContextAccessor.HttpContext.Session.GetString(SessionVariable.SessionKeyMessage)))
+    {
+        <div class="row">
+            <div class="col-lg-12">&nbsp;</div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <p><span class="text-lg bg-gradient-red text-white text-bold">SORRY!</span> <br />@_httpContextAccessor.HttpContext.Session.GetString(SessionVariable.SessionKeyMessage)</p>
+            </div>
+        </div>
+    }
+</div>

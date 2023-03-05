@@ -1,0 +1,105 @@
+﻿@model IEnumerable<BALibrary.Academic.AcademicYear>
+@inject SchoolERP.Data.ApplicationDbContext _context;
+@{
+    ViewData["Title"] = "Academic Years";
+    Layout = "~/Areas/Academic/Views/Shared/_Layout.cshtml";
+    int counter = 0;
+}
+
+<h4>@ViewData["Title"]</h4>
+
+<p>
+    <a asp-action="Create" class="btn btn-sm btn-flat btn-outline-danger">Create New Academic Year</a>
+</p>
+
+<table id="datatable" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Session)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Class)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SemesterId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SubjectGroup)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExamGroup)
+            </th>
+            <th>
+                @Html.Raw("Home Room Teacher")
+            </th>
+            <th>
+                @Html.Raw("NEXT_ACTION")
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            counter = counter + 1;
+            var employee = _context.Employees.Find(item.EmployeeId);
+            <tr>
+                <td>
+                    @Html.Raw(counter)
+                </td>
+                <td>
+                    @Html.Raw(item.Session.Year +" - "+item.Session.SchoolType+" - Grade "+item.Class.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Class.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Semester.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SubjectGroup.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExamGroup.Name)
+                </td>
+                <td>
+                    @Html.Raw(employee != null ? employee.FirstName + " " +employee.MiddleName + " "+ employee.LastName : "<span class'badge badge-danger'>N/A</span>")
+                </td>
+                <td>
+                    <a asp-controller="AcademicYearSections" asp-action="Index" asp-route-id="@item.Id" class="btn btn-md btn-outline btn-danger"> Sections (<span class="badge badge-warning">(@_context.AcademicYearSections.Where(a=>a.AcademicYearId == item.Id).ToList().Count)</span> </a> |
+                    <a asp-action="AssignHomeRoomTeacher" asp-route-id="@item.Id">@Html.Raw(employee != null ? "<i class='fa fa-cross'></i>" : "<i class='fa fa-check'></i>") Home Room Teacher</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-list"></i></a> |
+                    <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-edit"></i></a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa fa-trash"></i></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>#</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Session)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Class)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SemesterId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SubjectGroup)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExamGroup)
+            </th>
+            <th>
+                @Html.Raw("Home Room Teacher")
+            </th>
+            <th>
+                @Html.Raw("NEXT_ACTION")
+            </th>
+        </tr>
+    </tfoot>
+</table>

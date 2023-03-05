@@ -1,0 +1,73 @@
+﻿@model BALibrary.Admin.RoleModuleException
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>Role Module Exception</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="RoleModuleId" />
+            <div class="form-group">
+                <label asp-for="TableName" class="control-label"></label>
+                <input asp-for="TableName" class="form-control" />
+                <span asp-validation-for="TableName" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Browse" /> @Html.DisplayNameFor(model => model.Browse)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Read" /> @Html.DisplayNameFor(model => model.Read)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Edit" /> @Html.DisplayNameFor(model => model.Edit)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Add" /> @Html.DisplayNameFor(model => model.Add)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Delete" /> @Html.DisplayNameFor(model => model.Delete)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="FullyGranted" /> @Html.DisplayNameFor(model => model.FullyGranted)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="FullyDenied" /> @Html.DisplayNameFor(model => model.FullyDenied)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="AccessRightName" class="control-label"></label>
+                <input asp-for="AccessRightName" class="form-control" />
+                <span asp-validation-for="AccessRightName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-sm btn-flat btn-outline-dark" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

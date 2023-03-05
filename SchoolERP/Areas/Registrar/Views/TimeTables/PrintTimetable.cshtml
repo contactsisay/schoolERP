@@ -1,0 +1,177 @@
+﻿@using BALibrary.Academic;
+@inject SchoolERP.Data.ApplicationDbContext _context;
+@{
+    ViewData["Title"] = "Time table";
+    Layout = "~/Areas/Registrar/Views/Shared/_Layout.cshtml";
+
+    #region Data Settings
+    var queryResult = ViewBag.queryResult;
+    string className = "ALL CLASSES";
+    //if (cl != null)
+    //    className = "GRADE: " + cl.Name;
+    string[] weekdays = (string[])ViewBag.weekdays;
+    var periods = ViewBag.Periods;
+    #endregion
+}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="callout callout-info" style="text-align:center;font-weight:bolder;">
+                    <h1>AKAKI ADVENTIST SCHOOL</h1>
+                    <h3>@Html.Raw(className.ToUpper()+" TIME TABLES")</h3>
+                </div>
+
+                @if (ViewBag.ReportType == "STANDARD")
+                {
+                    <!-- Main content -->
+                    <div class="invoice p-3 mb-3">
+                        <!-- Table row -->
+                        <div class="row">
+                            <div class="col-12 table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align:center;">PERIOD</th>
+                                            @for (int i = 0; i < weekdays.Length; i++)
+                                            {
+                                                <th style="text-align:center;text-transform:capitalize;">@Html.Raw(weekdays[i])</th>
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int j = 0; j < periods.Count; j++)
+                                        {
+                                            <tr>
+                                                <td style="text-align:center;">@Html.Raw(j+1)</td>
+                                                @for (int k = 0; k < weekdays.Length; k++)
+                                                {
+                                                    bool found = false;
+                                                    foreach (var item in queryResult)
+                                                    {
+                                                        if (item.PeriodName.Equals(periods[j].Name) && item.WeekDay.Equals(weekdays[k]))
+                                                        {
+                                                            found = true;
+                                                            <td>
+                                                                <a class="btn btn-app bg-success" style="min-height:100px;min-width:150px;">
+                                                                    <span class="badge bg-info">OK</span>
+                                                                    <label>@Html.Raw(item.SubjectName +"("+item.SubjectCode+") <br/>" + item.PeriodFrom + "-" + item.PeriodTo +"<br/>"+item.TeacherName)</label><br />
+                                                                </a>
+                                                            </td>
+                                                            break;
+                                                        }
+                                                    }
+
+                                                    if (!found)
+                                                    {
+                                                        <td>
+                                                            <a class="btn btn-app bg-outline-danger" style="min-height:100px;min-width:150px;">
+                                                                <span class="badge bg-warning">NOT</span>
+                                                                <label>NOT SCHEDULED</label>
+                                                            </a>
+                                                        </td>
+                                                    }
+                                                }
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+                        <!-- this row will not appear when printing -->
+                        <div class="row no-print">
+                            <div class="col-12">
+                                <a href="#" rel="noopener" target="_blank" onclick="onPrint()" class="btn btn-sm btn-outline-dark"><i class="fas fa-print"></i> Print Timetable</a>
+
+                                <a asp-action="Index" class="btn btn-sm btn-outline-dark float-right" style="margin-right: 5px;">
+                                    <i class="fas fa-list"></i> Back to List
+                                </a>
+                                @* <button type="button" class="btn btn-sm btn-outline-dark float-right" style="margin-right: 5px;">
+                            <i class="fas fa-download"></i> Export to PDF
+                            </button>*@
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.invoice -->
+                }
+                else if (ViewBag.ReportType == "CUSTOM")
+                {
+                    <!-- Main content -->
+                    <div class="invoice p-3 mb-3">
+                        <!-- Table row -->
+                        <div class="row">
+                            <div class="col-12 table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>WEEK DAY</th>
+                                            <th>PERIOD</th>
+                                            <th>TIME</th>
+                                            <th>
+                                                <table style="width:100%;border:none;">
+                                                    <tr>
+
+                                                    </tr>
+                                                </table>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (var i = 0; i < (ViewBag.periods).Count; i++)
+                                        {
+                                            foreach (var item in queryResult)
+                                            {
+                                                if (weekdays[i].Equals(item.WeekDay))
+                                                {
+                                                    <tr>
+                                                        <td>@weekdays[i]</td>
+                                                        <td>@item.PeriodName</td>
+                                                        <td>@item.PeriodFrom - @item.PeriodTo</td>
+                                                        <th>
+                                                            <table style="width:100%;border:none;">
+                                                                <tr>
+                                                                    
+                                                                </tr>
+                                                            </table>
+                                                        </th>
+                                                    </tr>
+                                                }
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+                        <!-- this row will not appear when printing -->
+                        <div class="row no-print">
+                            <div class="col-12">
+                                <a href="#" rel="noopener" target="_blank" onclick="onPrint()" class="btn btn-sm btn-outline-dark"><i class="fas fa-print"></i> Print Timetable</a>
+
+                                <a asp-action="Index" class="btn btn-sm btn-outline-dark float-right" style="margin-right: 5px;">
+                                    <i class="fas fa-list"></i> Back to List
+                                </a>
+                                @* <button type="button" class="btn btn-sm btn-outline-dark float-right" style="margin-right: 5px;">
+                            <i class="fas fa-download"></i> Export to PDF
+                            </button>*@
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.invoice -->
+                }
+                
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+    function onPrint() {
+        window.addEventListener("load", window.print());
+    }
+</script>

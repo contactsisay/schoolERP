@@ -1,0 +1,91 @@
+﻿@model IEnumerable<BALibrary.Admin.RoleModule>
+@using BALibrary.Admin;
+@{
+    ViewData["Title"] = "Role Modules";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+    Role role = ((List<Role>)ViewData["Roles"])[0];
+    string[] moduleNames = (string[])ViewData["ModuleNames"];
+    //int counter = 0;
+}
+
+<h4>@ViewData["Title"]</h4>
+
+<p>
+    @*<a class="btn btn-sm btn-flat btn-outline-danger" asp-action="Create" asp-route-id="@role.Id">Create New Module</a>&nbsp;&nbsp;*@
+    <a asp-controller="Roles" asp-action="Index" class="btn btn-sm" style="background-color:#0a1a48;color:white;">Back to Roles</a>
+</p>
+
+<div class="row" style="border: 1px solid #0a1a48;">
+    <div class="col-lg-3">
+        <label>Name</label><br />
+        <span>@role.Name</span>
+    </div>
+    <div class="col-lg-3">
+        <label>Description</label><br />
+        <span>@role.Description</span>
+    </div>
+    <div class="col-lg-3">
+        <label>Status</label><br />
+        <span>@Html.Raw((role.Status != 1 ? "IN-ACTIVE" : "ACTIVE"))</span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12"><hr /></div>
+</div>
+
+<div class="row">
+    <form asp-action="SaveRoleModules">
+
+        <div class="row">
+            <input type="hidden" value="@Html.Raw(role.Id)" name="roleId" />
+            @foreach (string moduleName in moduleNames)
+            {
+                bool found = false;
+                int roleModuleId = 0;
+                foreach (RoleModule roleModule in Model)
+                {
+                    if (Common.GetModuleText((Common.ModuleName)roleModule.ModuleId).ToUpper() == moduleName)
+                    {
+                        found = true;
+                        roleModuleId = roleModule.Id;
+                        break;
+                    }
+                }
+
+                if (found)
+                {
+                    if (roleModuleId > 0) {
+                        <div class="col-4">
+                            <label style="padding:20px;">
+                                <input type="checkbox" name="@Html.Raw(moduleName+"_"+role.Id)" checked="checked" /> @Html.Raw(moduleName.ToUpper())
+                            </label>
+                            <a asp-controller="RoleModules" asp-action="RoleModuleExceptions" asp-route-id="@Html.Raw(roleModuleId)" class="small-box-footer">Add Exceptions <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-4">
+                        <label style="padding:20px;">
+                            <input type="checkbox" name="@Html.Raw(moduleName+"_"+role.Id)" />
+                            &nbsp;@Html.Raw(moduleName.ToUpper())</label>
+                    </div>
+                }
+            }
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12"><hr /></div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <input type="submit" class="btn btn-sm btn-flat btn-outline-dark" value="Save Changes" />
+                <a asp-controller="Roles" asp-action="Index" asp-route-id="@role.Id" class="btn btn-sm btn-flat btn-outline-danger">Cancel</a>
+            </div>
+        </div>
+
+    </form>
+</div>

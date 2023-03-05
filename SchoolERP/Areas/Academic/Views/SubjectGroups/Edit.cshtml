@@ -1,0 +1,122 @@
+﻿@model BALibrary.Academic.SubjectGroup
+@inject SchoolERP.Data.ApplicationDbContext _context;
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Academic/Views/Shared/_Layout.cshtml";
+    int counter = 0;
+    var subjectGroupDetails = _context.SubjectGroupDetails.Where(a => a.SubjectGroupId == Model.Id).ToList();
+    var subjects = _context.Subjects.ToList();
+}
+
+<h1>Edit</h1>
+
+<h4>SubjectGroup</h4>
+<hr />
+<form asp-action="Edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index">Back to List</a>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-lg-12">
+                    <legend>SUBJECT GROUP DETAILS</legend>
+                    <input type="hidden" id="rowCount" value="@Html.Raw(subjects.Count)" />
+
+                    <table id="employee-table" style="width:100%;">
+                        <tr>
+                            <th style="width:10%">
+                                <input type="checkbox" name="chkAll" id="chkAll" onchange="checkUncheckAll()" />
+                            </th>
+                            <th style="width:30%">Subject</th>
+                            <th style="width:30%">Subject ID</th>
+                            <th style="width:30%">Description</th>
+                        </tr>
+
+                        @foreach (var s in subjects)
+                        {
+                            bool found = false;
+                            int subjectGroupDetailId = 0;
+                            foreach (var item in subjectGroupDetails)
+                            {
+                                if (s.Id == item.SubjectId)
+                                {
+                                    subjectGroupDetailId = item.Id;
+                                    found = true;
+                                    break;
+                                }
+                            }
+
+                            if (found)
+                            {
+                                <tr>
+                                    <td><input type="checkbox" name="chk_@counter" id="chk_@counter" checked="checked" /></td>
+                                    <td>
+                                        <input type="text" readonly="readonly" value="@Html.Raw(s.Name + '('+s.Code+')')" class="form-control" />
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="SubjectId_@counter" value="@s.Id" />
+                                        <input type="hidden" name="SubjectGroupDetailId_@counter" value="@subjectGroupDetailId" />
+                                        <input type="text" readonly="readonly" value="@s.Id" class="form-control" />
+                                    </td>
+                                    <td><input type="text" name="Description_@counter" class="form-control" /></td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td><input type="checkbox" name="chk_@counter" id="chk_@counter" /></td>
+                                    <td>
+                                        <input type="text" readonly="readonly" value="@Html.Raw(s.Name + '('+s.Code+')')" class="form-control" />
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="SubjectId_@counter" value="@s.Id" />
+                                        <input type="text" readonly="readonly" value="@s.Id" class="form-control" />
+                                    </td>
+                                    <td><input type="text" name="Description_@counter" class="form-control" /></td>
+                                </tr>
+                            }
+
+                            counter++;
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<script>
+
+    function checkUncheckAll() {
+        var chkAll = document.getElementById("chkAll").checked;
+        var subjectsCount = document.getElementById("rowCount").value;
+
+        if (chkAll) {
+            for (var i = 0; i < subjectsCount; i++) {
+                $("#chk_" + i).prop("checked", true);
+            }
+        } else {
+            for (var i = 0; i < subjectsCount; i++) {
+                $("#chk_" + i).prop("checked", false);
+            }
+        }
+    }
+
+</script>

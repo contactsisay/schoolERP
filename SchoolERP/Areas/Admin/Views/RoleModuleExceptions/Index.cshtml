@@ -1,0 +1,90 @@
+﻿@model IEnumerable<BALibrary.Admin.RoleModuleException>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TableName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Browse)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Read)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Edit)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Add)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Delete)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FullyGranted)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FullyDenied)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AccessRightName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RoleModule)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TableName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Browse)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Read)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Edit)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Add)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Delete)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullyGranted)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullyDenied)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AccessRightName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RoleModule.Id)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

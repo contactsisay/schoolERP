@@ -1,0 +1,332 @@
+﻿@model BALibrary.Sales.Invoice
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Areas/Sales/Views/Shared/_Layout.cshtml";
+
+    List<string> pbOptions =  new List<string>();
+    if(ViewBag.InvoiceItems != null)
+        pbOptions = (List<string>)ViewBag.InvoiceItems;
+
+    decimal subtotal = 0;
+    decimal overallTax = 0;
+    decimal grandTotal = 0;
+}
+
+<h1>Create</h1>
+
+<h4>Invoice</h4>
+<hr />
+
+<form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="col-lg-3" style="border-right:2px solid black;">
+            <div class="row">
+                <div class="col-lg-12">
+                    <label asp-for="CustomerId" class="control-label"></label>
+                    <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.CustomerId"></select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">&nbsp;</div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <label asp-for="InvoiceTypeId" class="control-label"></label>
+                    <select asp-for="InvoiceTypeId" class="form-control" asp-items="ViewBag.InvoiceTypeId"></select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">&nbsp;</div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <label asp-for="InvoiceNo" class="control-label"></label>
+                    <input asp-for="InvoiceNo" class="form-control" readonly="readonly" value="@ViewBag.NextInvoiceNo" />
+                    <span asp-validation-for="InvoiceNo" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">&nbsp;</div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <a asp-action="Index" class="btn btn-lg btn-outline-primary">Back to List</a>
+                    <input type="submit" value="Create Invoice" id="btn_submit" class="btn btn-lg btn-outline btn-dark" />
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <legend>INVOICE DETAILS</legend>
+            <input type="hidden" id="pbOptions" value="@ViewBag.pbOptions" />
+            <input type="hidden" id="rowCount" value="@Html.Raw(pbOptions.Count+1)" />
+            <input type="hidden" id="selectedItem" />
+
+            <table id="employee-table" style="width:100%;">
+                <tr>
+                    <th style="width:20%">Item Name</th>
+                    <th style="width:20%">Stock Balance</th>
+                    <th style="width:20%">Quantity @Html.Raw((pbOptions.Count > 0 ? "<span id='errorMessage' style='color:red;display:inline;font-weight:bold;'>Qty <= Stock </span>" : "<span id='errorMessage' style='color:red;display:none;font-weight:bold;'>Qty <= Stock </span>"))</th>
+                    <th style="width:15%">Unit Price</th>
+                    <th style="width:15%">Total Price</th>
+                    <th style="width:10%">Action</th>
+                </tr>
+                
+                @for(int j=0;j<pbOptions.Count;j++) {
+                    string[] optItems = pbOptions[j].Split('#');//0,1,2,3,4,5,6,7
+                    decimal unitprice = 0;//2
+                    decimal stockbalance = 0;//3
+                    int istaxable = 0;//4
+                    bool isselected = false;//5
+                    int quantity = 0;//6
+                    int rowIndex = j+1;//7
+                    decimal totalprice = 0;
+
+                    //creating dropdown (productbatch_id)
+                    string optList = "<option value='-1'>Select</option>";
+                    for (int i = 0; i < pbOptions.Count; i++)
+                    {                        
+                        string[] optItems2 = pbOptions[i].Split('#');//0,1,2,3,4,5,6,7
+                        if ((optItems2[0] == optItems[0]) && (optItems[5].ToLower() == "true")) //is_selected
+                        {   
+                            unitprice = Convert.ToDecimal(optItems2[2]);
+                            stockbalance = Convert.ToDecimal(optItems2[3]);
+                            istaxable = Convert.ToInt32(optItems2[4]);
+                            isselected = Convert.ToBoolean(optItems2[5]);
+                            quantity = Convert.ToInt32(optItems2[6]);
+                            //rowIndex = Convert.ToInt32(optItems2[7]);
+                            totalprice = quantity * unitprice;
+                            subtotal += totalprice;
+                            //overallTax += (istaxable == 1 ? totalprice + (decimal)(totalprice * 0.15) : totalprice);
+                            grandTotal += subtotal+overallTax;
+                            optList += "<option value='" + optItems2[0] + "' selected='selected'>" + optItems2[1] + "</option>";
+                        }
+                        else
+                        {
+                            optList += "<option value='" + optItems2[0] + "'>" + optItems2[1] + "</option>";
+                        }
+                    }
+
+                    <tr>
+                        <td>
+                            @Html.Raw("<input type='hidden' id='istaxable_" + rowIndex + "' name='istaxable_" + rowIndex + "' value='"+istaxable+"' /><select id='productbatchid_" + rowIndex + "' name='productbatchid_" + rowIndex + "' class='form-control' onchange='onItemSelect(this.id)'>"+optList+"</select>");
+                        </td>
+                        <td>
+                            @Html.Raw("<input type='text' name='stock_balance_" + rowIndex + "' id='stock_balance_" + rowIndex + "' class='form-control' value='"+stockbalance+"' readonly='readonly' />");
+                        </td>
+                        <td>
+                            @Html.Raw("<input type='text' name='quantity_" + rowIndex + "' id='quantity_" + rowIndex + "' value='"+quantity+"' class='form-control' style='background-color:pink;' onkeyup='onQuantityChange(this.id)' />");
+                        </td>
+                        <td>
+                            @Html.Raw("<input type='text' name='unitprice_" + rowIndex + "' id='unitprice_" + rowIndex + "' class='form-control' value='"+unitprice+"' readonly='readonly' />");
+                        </td>
+                        <td>
+                            @Html.Raw("<input type='text' name='totalprice_" + rowIndex + "' id='totalprice_" + rowIndex + "' class='form-control' value='"+totalprice+"' readonly='readonly' />");
+                        </td>
+                        <td>
+                            @Html.Raw("<input type='button' id='btn_" + rowIndex + "' value='Delete' class='btn btn-sm btn-danger' onclick='deleteRow(this.id)' />");
+                        </td>
+                    </tr>
+                }
+
+            </table>
+            <br />
+            <table style="width:100%;">
+                <tr>
+                    <td colspan="6">
+                        <a href="#" class="btn btn-sm btn-dark" onclick="addNewRow()">Add New Item<span class="fas fa-add"></span></a><br />
+                    </td>
+                </tr>
+                <tr>
+                    <th colspan="5" style="width:75%;text-align:right;font-weight:bold;">Subtotal:</th>
+                    <th style="width:15%;">
+                        <input type="text" id="subtotal" readonly="readonly" class="form-control" @Html.Raw("value='"+subtotal+"'") />
+                    </th>
+                    <th style="width:10%;">&nbsp;</th>
+                </tr>
+                <tr>
+                    <th colspan="5" style="width:75%;text-align:right;font-weight:bold;">TAX (15%):</th>
+                    <th style="width:15%;">
+                        <input type="text" id="overallTax" readonly="readonly" @Html.Raw("value='"+overallTax+"'") class="form-control" />
+                    </th>
+                    <th style="width:10%;">&nbsp;</th>
+                </tr>
+                <tr>
+                    <th colspan="5" style="width:75%;text-align:right;font-weight:bold;">Grand Total:</th>
+                    <th style="width:15%;">
+                        <input type="text" id="grandTotal" readonly="readonly" @Html.Raw("value='"+grandTotal+"'") class="form-control" />
+                    </th>
+                    <th style="width:10%;">&nbsp;</th>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+
+    function onItemSelect(rowId) {
+        var item = document.getElementById(rowId);
+        var itemId = item.value;
+        var rowCount = item.id.split('_')[1];
+        var unitPrice = 0;
+        var rowTotal = 0;
+        var pbOptions = document.getElementById("pbOptions").value.split(",");
+        for (var i = 0; i < pbOptions.length; i++) {
+            var pbOptionItems = pbOptions[i].split("#");
+            if (parseInt(pbOptionItems[0]) == parseInt(itemId)) {
+                document.getElementById("selectedItem").value = pbOptions[i];
+                document.getElementById("unitprice_" + rowCount).value = parseFloat(pbOptionItems[2]);
+                document.getElementById("stock_balance_" + rowCount).value = parseFloat(pbOptionItems[3]);
+                document.getElementById("istaxable_" + rowCount).value = parseFloat(pbOptionItems[4]);
+                break;
+            }
+        }
+    }
+
+    function onQuantityChange(rowId) {
+
+        var grandTotal = 0;
+        var rowCount = rowId.split('_')[1];
+
+        //checking balance
+        //bindOnKeyUp("productbatchid_" + rowCount);
+
+        var unitprice = parseFloat(document.getElementById("unitprice_" + rowCount).value);
+        var quantity = document.getElementById("quantity_" + rowCount).value;
+        var isTaxable = document.getElementById("istaxable_" + rowCount).value;
+        var stock_balance = document.getElementById("stock_balance_" + rowCount).value;
+
+        if (quantity == "") {
+            quantity = 0;
+            document.getElementById("quantity_" + rowCount).value = parseFloat(0);
+        }
+
+        if (parseFloat(quantity) > parseFloat(stock_balance)) {
+            document.getElementById("quantity_" + rowCount).style.backgroundColor = "pink";
+            document.getElementById("btn_submit").style.display = "none";
+            document.getElementById("errorMessage").innerText = " (Quantity > Stock)";
+            document.getElementById("errorMessage").style.display = "inline";
+        } else {
+            rowTotal = parseFloat(unitprice) * parseFloat(quantity);
+            document.getElementById("totalprice_" + rowCount).value = rowTotal;
+            document.getElementById("quantity_" + rowCount).style.backgroundColor = "white";
+            document.getElementById("btn_submit").style.display = "inline";
+            document.getElementById("errorMessage").style.display = "none";
+        }
+
+        //re-calculate grand total
+        calculateGrandTotal();
+    }
+
+    function addNewRow() {
+        var table = document.getElementById("employee-table");
+        var rowCount = table.rows.length;
+        var row = table.insertRow(rowCount);
+
+        var pbOptions = document.getElementById("pbOptions").value.split(",");
+        document.getElementById("rowCount").value = rowCount;
+
+        var optionsList = "<option value='-1'>Select</option>";
+        for (var i = 0; i < pbOptions.length - 1; i++) {
+            var optionItemList = pbOptions[i].split("#");
+            if (!alreadyAdded(optionItemList[0], rowCount)) {
+                optionsList += "<option value='" + optionItemList[0] + "'>" + optionItemList[1] + "</option>";
+            }
+        }
+
+        var cell0 = row.insertCell(0);
+        cell0.innerHTML = "<input type='hidden' id='istaxable_" + rowCount + "' name='istaxable_" + rowCount + "' value='0' /><select id='productbatchid_" + rowCount + "' name='productbatchid_" + rowCount + "' class='form-control' onchange='onItemSelect(this.id)'>" + optionsList + "</select>";
+
+        var cell1 = row.insertCell(1);
+        cell1.innerHTML = "<input type='text' name='stock_balance_" + rowCount + "' id='stock_balance_" + rowCount + "' class='form-control' readonly='readonly' />";
+
+        var cell2 = row.insertCell(2);
+        cell2.innerHTML = "<input type='text' name='quantity_" + rowCount + "' id='quantity_" + rowCount + "' value='0' class='form-control' onkeyup='onQuantityChange(this.id)' />";
+
+        var cell3 = row.insertCell(3);
+        cell3.innerHTML = "<input type='text' name='unitprice_" + rowCount + "' id='unitprice_" + rowCount + "' class='form-control' readonly='readonly' />";
+
+        var cell4 = row.insertCell(4);
+        cell4.innerHTML = "<input type='text' name='totalprice_" + rowCount + "' id='totalprice_" + rowCount + "' class='form-control' readonly='readonly' />";
+
+        var cell5 = row.insertCell(5);
+        cell5.innerHTML = "<input type='button' id='btn_" + rowCount + "' value='Delete' class='btn btn-sm btn-danger' onclick='deleteRow(this.id)' />";
+    }
+
+    function deleteRow(id) {
+        var table = document.getElementById('employee-table');
+        var rowCount = table.rows.length;
+        document.getElementById("rowCount").value = rowCount - 1;
+        var ele = document.getElementById(id);
+
+        //re-calculate grand total
+        calculateGrandTotal();
+
+        if (rowCount <= 1) {
+            alert("There is no row available to delete!");
+            return;
+        }
+
+        if (ele) {
+            ele.parentNode.parentNode.remove();
+        } else {
+            table.deleteRow(rowCount - 1);
+        }
+
+    }
+
+    function calculateGrandTotal() {
+        var rowCount = parseInt(document.getElementById("rowCount").value);
+        var grandTotal = 0;
+        var applyTax = false;
+        for (var i = 1; i <= rowCount; i++) {
+            var istaxable = 0;
+            var is_taxable_field = document.getElementById("istaxable_" + i);
+            if (is_taxable_field != null && is_taxable_field.value != "") {
+                istaxable = parseInt(is_taxable_field.value);
+                if (istaxable == 1) {
+                    applyTax = true;
+                }
+            }
+
+            var total_price = document.getElementById("totalprice_" + i);
+            if (total_price != null && total_price.value != "") {
+                grandTotal += parseFloat(total_price.value);
+            }
+        }
+
+        //before tax applied
+        document.getElementById("subtotal").value = grandTotal.toFixed(2);
+        var overallTax = 0;
+        if (applyTax) {
+            overallTax = (grandTotal * parseFloat(0.15)).toFixed(2);
+            document.getElementById("overallTax").value = overallTax;
+        }
+
+        document.getElementById("grandTotal").value = (parseFloat(grandTotal) + parseFloat(overallTax));
+    }
+
+    function alreadyAdded(itemId, rowCount) {
+        var p = false;
+        if (rowCount > 1) {
+            for (var i = rowCount; i > 1; i--) {
+                var pbId = document.getElementById("productbatchid_" + (i - 1)).value;
+                if (parseInt(pbId) == parseInt(itemId)) {
+                    p = true;
+                    break;
+                }
+            }
+        }
+
+        return p;
+    }
+
+</script>
